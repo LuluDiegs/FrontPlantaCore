@@ -50,10 +50,10 @@ export const postService = {
   },
 
   likeComment(comentarioId) {
-    return api.post(`/Comentario/${comentarioId}/curtir`).then((r) => r.data);
+    return api.post(`/Post/comentario/${comentarioId}/curtir`).then((r) => r.data);
   },
 
   unlikeComment(comentarioId) {
-    return api.delete(`/Comentario/${comentarioId}/curtida`).then((r) => r.data);
+    return api.delete(`/Post/comentario/${comentarioId}/curtida`).then((r) => r.data);
   },
 };
