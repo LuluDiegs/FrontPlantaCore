@@ -100,7 +100,7 @@ api.interceptors.request.use(
       }
     }
 
-    if (config.data && typeof config.data === 'object') {
+    if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
       config.data = transformKeysToPascalCase(config.data);
     }
 
