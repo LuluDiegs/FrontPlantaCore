@@ -5,7 +5,6 @@ export const plantService = {
     const formData = new FormData();
     formData.append('foto', file);
     return api.post('/Planta/identificar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
     }).then((r) => r.data);
   },
