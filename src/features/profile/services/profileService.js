@@ -20,9 +20,7 @@ export const profileService = {
   uploadProfilePhoto(file) {
     const formData = new FormData();
     formData.append('foto', file);
-    return api.post('/Usuario/foto-perfil', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }).then((r) => r.data);
+    return api.post('/Usuario/foto-perfil', formData).then((r) => r.data);
   },
 
   follow(usuarioId) {

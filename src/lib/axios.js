@@ -37,17 +37,28 @@ const transformKeysToPascalCase = (obj) => {
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  transformRequest: [
+    (data) => {
+      // Se for FormData, retorna como está (não transforma)
+      if (data instanceof FormData) {
+        return data;
+      }
+      // Caso contrário, serializa como JSON
+      if (data) {
+        return JSON.stringify(data);
+      }
+      return data;
+    },
+  ],
 });
 
-// Interceptor para setar Content-Type apenas para requisições que não são FormData
+// Interceptor para gerenciar headers baseado no tipo de dado
 api.interceptors.request.use((config) => {
   if (config.data instanceof FormData) {
-    // Deixar FormData ser tratado naturalmente pelo axios/browser
-    // Não setar Content-Type manualmente - browser/axios cuidam disso
+    // FormData: remover Content-Type manualmente para deixar FormData gerar multipart/form-data
     delete config.headers['Content-Type'];
-    // Não transformar dados FormData
-    config.transformRequest = [(data) => data];
   } else if (config.data) {
+    // JSON: setar Content-Type como JSON
     config.headers['Content-Type'] = 'application/json';
   }
   return config;

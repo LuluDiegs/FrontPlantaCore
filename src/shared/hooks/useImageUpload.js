@@ -30,7 +30,6 @@ export default function useImageUpload(type = 'foto') {
 
     try {
       const { data } = await api.post(endpoints[type], formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (e) => {
           if (e.total) {
             setProgress(Math.round((e.loaded * 100) / e.total));
