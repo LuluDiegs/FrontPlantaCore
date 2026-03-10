@@ -241,20 +241,28 @@ export function useToggleCommentLike(postId) {
     onMutate: async ({ comentarioId, isLiked }) => {
       await qc.cancelQueries({ queryKey: ['comments', postId] });
 
+      const previous = qc.getQueryData(['comments', postId]);
+
       qc.setQueryData(['comments', postId], (old) => {
-        if (!Array.isArray(old)) return old;
-        return old.map((c) =>
+        if (!old) return old;
+        const comentarios = old.dados || old;
+        if (!Array.isArray(comentarios)) return old;
+        const updated = comentarios.map((c) =>
           c.id === comentarioId
             ? { ...c, curtiuUsuario: !isLiked, totalCurtidas: (c.totalCurtidas || 0) + (isLiked ? -1 : 1) }
             : c
         );
+        return old.dados ? { ...old, dados: updated } : updated;
       });
+
+      return { previous };
     },
 
-    onError: (error) => {
-      qc.invalidateQueries({ queryKey: ['comments', postId] });
+    onError: (error, _vars, context) => {
+      if (context?.previous) {
+        qc.setQueryData(['comments', postId], context.previous);
+      }
       const status = error?.response?.status;
-      // 400 pode significar estado já aplicado (já curtiu/já descurtiu) — apenas sincroniza silenciosamente
       if (status !== 400) {
         toast.error('Erro ao curtir comentário');
       }
