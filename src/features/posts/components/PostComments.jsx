@@ -70,6 +70,7 @@ export default function PostComments({ postId }) {
                 <button
                   className={`${styles.likeBtn} ${comment.curtiuUsuario ? styles.liked : ''}`}
                   onClick={() => toggleLike.mutate({ comentarioId: comment.id, isLiked: !!comment.curtiuUsuario })}
+                  disabled={toggleLike.isPending}
                   aria-label={comment.curtiuUsuario ? 'Descurtir comentário' : 'Curtir comentário'}
                 >
                   <Heart size={12} fill={comment.curtiuUsuario ? 'currentColor' : 'none'} />

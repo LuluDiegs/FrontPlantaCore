@@ -251,9 +251,13 @@ export function useToggleCommentLike(postId) {
       });
     },
 
-    onError: () => {
+    onError: (error) => {
       qc.invalidateQueries({ queryKey: ['comments', postId] });
-      toast.error('Erro ao curtir comentário');
+      const status = error?.response?.status;
+      // 400 pode significar estado já aplicado (já curtiu/já descurtiu) — apenas sincroniza silenciosamente
+      if (status !== 400) {
+        toast.error('Erro ao curtir comentário');
+      }
     },
   });
 }
