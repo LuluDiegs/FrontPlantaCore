@@ -42,6 +42,14 @@ const api = axios.create({
   },
 });
 
+// Interceptor para lidar com FormData
+api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+  return config;
+});
+
 if (IS_MOCK) {
   import('../mocks/mockAdapter').then(({ default: mockAdapter }) => {
     api.defaults.adapter = mockAdapter;
