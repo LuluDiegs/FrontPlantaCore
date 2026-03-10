@@ -41,7 +41,13 @@ const api = axios.create({
 
 // Interceptor para setar Content-Type apenas para requisições que não são FormData
 api.interceptors.request.use((config) => {
-  if (!(config.data instanceof FormData) && config.data) {
+  if (config.data instanceof FormData) {
+    // Deixar FormData ser tratado naturalmente pelo axios/browser
+    // Não setar Content-Type manualmente - browser/axios cuidam disso
+    delete config.headers['Content-Type'];
+    // Não transformar dados FormData
+    config.transformRequest = [(data) => data];
+  } else if (config.data) {
     config.headers['Content-Type'] = 'application/json';
   }
   return config;
