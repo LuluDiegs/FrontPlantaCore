@@ -1,0 +1,112 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(82, 183, 136, 0.15);
+  margin-bottom: 24px;
+}
+
+.top {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  line-height: 1.2;
+}
+
+.email {
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
+.bio {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: var(--color-text-mid);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+/* Stats — identidade visual verde */
+.stats {
+  display: flex;
+  gap: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--gradient-soft);
+  border: 1px solid rgba(82, 183, 136, 0.18);
+  border-radius: var(--radius-sm);
+  flex: 1;
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.stat strong {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-forest);
+  line-height: 1.2;
+}
+
+.stat span {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.statLink {
+  flex: 1;
+  display: contents;
+}
+
+.statLink .stat {
+  cursor: pointer;
+}
+
+.statLink:hover .stat {
+  background: var(--color-soft);
+  box-shadow: 0 2px 10px var(--color-shadow);
+  transform: translateY(-2px);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stats {
+    gap: 6px;
+  }
+
+  .stat {
+    padding: 10px 10px;
+  }
+
+  .stat strong {
+    font-size: 1.125rem;
+  }
+}

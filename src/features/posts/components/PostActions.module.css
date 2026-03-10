@@ -1,0 +1,68 @@
+.actions {
+  display: flex;
+  gap: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(82, 183, 136, 0.12);
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.btn:hover {
+  background: var(--color-soft);
+  color: var(--color-forest);
+  transform: scale(1.04);
+}
+
+/* Estado curtido */
+.liked {
+  color: #e11d48;
+}
+
+.liked:hover {
+  color: #e11d48;
+  background: #fff1f2;
+}
+
+/* Estado desabilitado - próprio post */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled:hover {
+  background: transparent;
+  transform: none;
+}
+
+/* Animação no coração ao curtir */
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.35);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.liked svg {
+  animation: heartPop 0.35s ease both;
+}

@@ -1,0 +1,150 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  color: var(--color-text-dark);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-medium);
+  background: var(--color-white);
+}
+
+.input::placeholder {
+  color: var(--color-text-light);
+}
+
+.sendBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: white;
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: #245a42;
+}
+
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.comment {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.bubble {
+  background: #f9fafb;
+  border-radius: 4px 14px 14px 14px;
+  padding: 10px 14px;
+}
+
+.author {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.author:hover {
+  text-decoration: underline;
+}
+
+.text {
+  font-size: 0.875rem;
+  color: var(--color-text-mid);
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+  margin-top: 2px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding-left: 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.likeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-text-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color var(--transition), transform var(--transition);
+}
+
+.likeBtn:hover {
+  color: #e11d48;
+  transform: scale(1.1);
+}
+
+.liked {
+  color: #e11d48;
+}
+
+.liked svg {
+  animation: heartPop 0.35s ease both;
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-text-light);
+  font-size: 0.75rem;
+  transition: color var(--transition);
+}
+
+.deleteBtn:hover {
+  color: #dc2626;
+}

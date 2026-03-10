@@ -1,0 +1,77 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-mid);
+  letter-spacing: 0.2px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--color-mist);
+  border: 2px solid rgba(82, 183, 136, 0.15);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.wrapper:focus-within {
+  border-color: var(--color-medium);
+  background: var(--color-white);
+  box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.1);
+}
+
+.wrapperError {
+  border-color: #ef4444;
+  background: #fff8f8;
+}
+
+.wrapperError:focus-within {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.icon {
+  color: var(--color-medium);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  font-size: 0.9375rem;
+  color: var(--color-text-dark);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-light);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-light);
+  padding: 4px;
+  border-radius: 4px;
+  transition: color var(--transition);
+}
+
+.toggle:hover {
+  color: var(--color-forest);
+}
+
+.error {
+  font-size: 0.8125rem;
+  color: #ef4444;
+  font-weight: 600;
+}

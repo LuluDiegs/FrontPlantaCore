@@ -1,0 +1,33 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--color-text-mid);
+  transition: background var(--transition), color var(--transition);
+}
+
+.wrapper:hover {
+  background: var(--color-soft);
+  color: var(--color-forest);
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 10px;
+  pointer-events: none;
+}

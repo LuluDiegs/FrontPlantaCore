@@ -1,0 +1,59 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 67, 50, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 200;
+  animation: fadeIn 0.2s ease both;
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(27, 67, 50, 0.3);
+  border: 1px solid rgba(82, 183, 136, 0.12);
+  animation: fadeInUp 0.25s ease both;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--color-text-light);
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.close:hover {
+  background: var(--color-soft);
+  color: var(--color-forest);
+  transform: scale(1.1);
+}
+
+.body {
+  padding: 20px 24px 24px;
+}

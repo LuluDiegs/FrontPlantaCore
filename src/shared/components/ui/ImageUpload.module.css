@@ -1,0 +1,72 @@
+.dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 200px;
+  border: 2px dashed var(--color-light);
+  border-radius: var(--radius-md);
+  background: #f9fafb;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  overflow: hidden;
+}
+
+.dropzone:hover {
+  border-color: var(--color-medium);
+  background: var(--color-soft);
+}
+
+.dragging {
+  border-color: var(--color-forest);
+  background: var(--color-soft);
+}
+
+.hasPreview {
+  border-style: solid;
+  border-color: var(--color-light);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 24px;
+  text-align: center;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  transition: background var(--transition);
+}
+
+.clearBtn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}

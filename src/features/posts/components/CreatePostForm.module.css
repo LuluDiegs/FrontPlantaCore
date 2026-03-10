@@ -1,0 +1,131 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.plantPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.plantGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.plantOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: 2px solid var(--color-soft);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), background var(--transition);
+  text-align: center;
+}
+
+.plantOption:hover {
+  border-color: var(--color-light);
+  background: #f9fafb;
+}
+
+.selected {
+  border-color: var(--color-forest);
+  background: var(--color-soft);
+}
+
+.plantImg {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.plantPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-medium);
+}
+
+.plantOption span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-mid);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.textarea {
+  padding: 14px;
+  background: #f9fafb;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-base);
+  color: var(--color-text-dark);
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-medium);
+  background: var(--color-white);
+}
+
+.textarea::placeholder {
+  color: var(--color-text-light);
+}
+
+.textareaError {
+  border-color: #ef4444;
+}
+
+.error {
+  font-size: 0.8125rem;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .plantGrid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 6px;
+  }
+
+  .plantOption {
+    padding: 8px 6px;
+  }
+}

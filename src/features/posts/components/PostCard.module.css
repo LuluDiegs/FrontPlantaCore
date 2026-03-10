@@ -1,0 +1,45 @@
+.card {
+  background: var(--color-white);
+  border: 1px solid rgba(82, 183, 136, 0.12);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow var(--transition), transform var(--transition);
+  animation: fadeInUp 0.4s ease both;
+}
+
+.card:hover {
+  box-shadow: 0 6px 24px var(--color-shadow);
+  transform: translateY(-2px);
+}
+
+.content {
+  font-size: 0.9375rem;
+  color: var(--color-text-dark);
+  line-height: 1.65;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.plantImage {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-light);
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    gap: 12px;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

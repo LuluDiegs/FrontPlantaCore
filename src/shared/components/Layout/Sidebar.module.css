@@ -1,0 +1,81 @@
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 28px 14px 80px;
+  border-right: 1px solid rgba(82, 183, 136, 0.15);
+  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-mist) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Folha decorativa fundo */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  right: -25px;
+  width: 130px;
+  height: 165px;
+  background: rgba(82, 183, 136, 0.07);
+  border-radius: 50% 5% 50% 5%;
+  transform: rotate(18deg);
+  pointer-events: none;
+  animation: leafSway 10s ease-in-out infinite;
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: 50px;
+  right: 18px;
+  width: 75px;
+  height: 100px;
+  background: rgba(82, 183, 136, 0.05);
+  border-radius: 5% 50% 5% 50%;
+  transform: rotate(-12deg);
+  pointer-events: none;
+  animation: leafSway 8s ease-in-out infinite reverse;
+  animation-delay: -3s;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-mid);
+  transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+  position: relative;
+}
+
+.link:hover {
+  background: var(--color-soft);
+  color: var(--color-forest);
+  transform: translateX(5px);
+}
+
+.active {
+  background: linear-gradient(135deg, var(--color-soft) 0%, rgba(82, 183, 136, 0.14) 100%);
+  color: var(--color-forest);
+  box-shadow: inset 3px 0 0 var(--color-forest);
+  font-weight: 700;
+}
+
+.active:hover {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}

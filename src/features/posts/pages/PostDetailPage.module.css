@@ -1,0 +1,20 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  transition: color var(--transition);
+  align-self: flex-start;
+}
+
+.back:hover {
+  color: var(--color-forest);
+}

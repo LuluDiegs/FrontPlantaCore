@@ -1,0 +1,40 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--gradient-soft);
+  border: 1px solid rgba(82, 183, 136, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  border-left: 3px solid var(--color-medium);
+  transition: box-shadow var(--transition), transform var(--transition), border-left-color var(--transition);
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px var(--color-shadow);
+  transform: translateY(-2px);
+  border-left-color: var(--color-forest);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-forest);
+  margin-bottom: 8px;
+}
+
+.header h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.text {
+  font-size: 0.875rem;
+  color: var(--color-text-mid);
+  line-height: 1.65;
+  white-space: pre-line;
+}

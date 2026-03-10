@@ -1,0 +1,47 @@
+.avatar,
+.fallback {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-soft);
+  color: var(--color-forest);
+  border: 1.5px solid rgba(82, 183, 136, 0.2);
+}
+
+.avatar {
+  border: 1.5px solid rgba(82, 183, 136, 0.18);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.avatar:hover {
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3);
+  transform: scale(1.05);
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+}
+
+.lg {
+  width: 56px;
+  height: 56px;
+}
+
+.xl {
+  width: 80px;
+  height: 80px;
+  border-width: 2px;
+  border-color: rgba(82, 183, 136, 0.25);
+}
