@@ -4,8 +4,11 @@
   padding: 28px 14px 80px;
   border-right: 1px solid rgba(82, 183, 136, 0.15);
   background: linear-gradient(180deg, var(--color-white) 0%, var(--color-mist) 100%);
-  position: relative;
+  position: sticky;
   overflow: hidden;
+  top: 64px;
+  height: calc(100vh - 28px);
+  align-self: flex-start;
 }
 
 /* Folha decorativa fundo */
