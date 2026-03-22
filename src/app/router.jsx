@@ -29,6 +29,9 @@ const EditProfilePage = lazy(() => import('../features/profile/pages/EditProfile
 const NotificationsPage = lazy(() => import('../features/notifications/pages/NotificationsPage'));
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
+const EventsPage = lazy(() => import('../features/events/pages/EventsPage'));
+const CreateUpdateEventPage = lazy(() => import('../features/events/pages/CreateUpdateEventPage'));
+
 export default function AppRouter() {
   return (
     <ErrorBoundary>
@@ -57,6 +60,9 @@ export default function AppRouter() {
               <Route path="/perfil/editar" element={<EditProfilePage />} />
               <Route path="/usuario/:usuarioId" element={<UserProfilePage />} />
               <Route path="/notificacoes" element={<NotificationsPage />} />
+              <Route path="/eventos" element={<EventsPage />} />
+              <Route path="/criar-evento" element={<CreateUpdateEventPage />} />
+              <Route path="/editar-evento/:id" element={<CreateUpdateEventPage />} />
             </Route>
           </Route>
 
