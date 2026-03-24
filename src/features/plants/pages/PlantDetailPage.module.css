@@ -112,3 +112,66 @@
   justify-content: flex-end;
   gap: 10px;
 }
+
+.recentPosts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 24px;
+  margin-top: 8px;
+  border-top: 2px dashed rgba(82, 183, 136, 0.15); /* Linha pontilhada seguindo o tom de verde */
+}
+
+.recentPosts h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Grid de Fotos seguindo o padrão de sombras e raios do projeto */
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.postsGrid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius-md); /* Mesmo raio das outras imagens do app */
+  border: 2px solid transparent;
+  transition: transform var(--transition), border-color var(--transition);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  cursor: pointer;
+  background-color: var(--color-background-soft);
+}
+
+.postsGrid img:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-forest-light);
+  box-shadow: 0 6px 15px var(--color-shadow);
+}
+
+/* Estado vazio ou carregando */
+.emptyPosts {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+  background: var(--color-background-soft);
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(82, 183, 136, 0.2);
+}
+
+/* Ajuste Responsivo para Mobile */
+@media (max-width: 480px) {
+  .postsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}

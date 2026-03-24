@@ -89,7 +89,18 @@ export default function PlantDetailPage() {
           Remover planta
         </Button>
       </div>
-
+      <section className={styles.recentPosts}>
+        <h3>Postagens Recentes da Comunidade</h3>
+        {isLoadingPosts ? (
+          <Spinner />
+        ) : (
+          <div className={styles.postsGrid}>
+            {posts.map(post => (
+              <img key={post.id} src={post.imageUrl} alt="Post da comunidade" />
+            ))}
+          </div>
+        )}
+      </section>
       <Modal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
