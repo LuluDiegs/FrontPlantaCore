@@ -31,6 +31,26 @@
   background: var(--color-bg-light);
   overflow: hidden;
 }
+.hashtagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: -4px; 
+  margin-bottom: 4px;
+}
+
+.hashtag {
+  color: var(--color-forest);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition), opacity var(--transition);
+}
+
+.hashtag:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
 
 @media (max-width: 480px) {
   .card {

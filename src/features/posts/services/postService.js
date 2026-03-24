@@ -5,8 +5,8 @@ export const postService = {
     return api.post('/Post', data).then((r) => r.data);
   },
 
-  update(postId, conteudo) {
-    return api.put(`/Post/${postId}`, { conteudo }).then((r) => r.data);
+  update(postId, conteudo, hashtags = []) {
+    return api.put(`/Post/${postId}`, { conteudo, hashtags }).then((r) => r.data);
   },
 
   delete(postId) {
@@ -19,6 +19,10 @@ export const postService = {
 
   getFeed(pagina = 1, tamanho = 10) {
     return api.get('/Post/feed', { params: { pagina, tamanho } }).then((r) => r.data);
+  },
+  
+  getByHashtag(hashtag, pagina = 1, tamanho = 10) {
+    return api.get(`/Post/hashtag/${encodeURIComponent(hashtag)}`, { params: { pagina, tamanho } }).then((r) => r.data);
   },
 
   getExplore(pagina = 1, tamanho = 10) {

@@ -13,6 +13,19 @@ export default function PostCard({ post, onDelete }) {
 
       <p className={styles.content}>{post.conteudo}</p>
 
+      {post.hashtags && post.hashtags.length > 0 && (
+        <div className={styles.hashtagsContainer}>
+          {post.hashtags.map((tag) => (
+            <span 
+              key={tag.id} 
+              className={styles.hashtag}
+            >
+              #{tag.nome}
+            </span>
+          ))}
+        </div>
+      )}
+
       {post.fotoPlanta && (
         <img
           src={post.fotoPlanta}
