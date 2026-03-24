@@ -128,4 +128,70 @@
   .plantOption {
     padding: 8px 6px;
   }
+} /* <-- A CHAVE DO MEDIA QUERY FECHA AQUI AGORA */
+
+/* --- SESSÃO DE HASHTAGS --- */
+.hashtagSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hashtagInput {
+  padding: 12px 14px;
+  background: #f9fafb;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-base);
+  color: var(--color-text-dark);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.hashtagInput:focus {
+  outline: none;
+  border-color: var(--color-medium);
+  background: var(--color-white);
+}
+
+.hashtagInput::placeholder {
+  color: var(--color-text-light);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tagBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-soft); 
+  color: var(--color-forest);
+  border: 1px solid var(--color-forest);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.removeTagBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-forest);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity var(--transition), color var(--transition);
+}
+
+.removeTagBtn:hover {
+  opacity: 1;
+  color: #ef4444; 
 }

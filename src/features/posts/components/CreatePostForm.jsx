@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Flower2 } from 'lucide-react';
+import { Flower2, X} from 'lucide-react';
 import { useCreatePost } from '../hooks/usePosts';
 import { useMyPlants } from '../../plants/hooks/usePlants';
 import Button from '../../../shared/components/ui/Button';
@@ -15,20 +15,47 @@ const postSchema = z.object({
 
 export default function CreatePostForm() {
   const [selectedPlantId, setSelectedPlantId] = useState(null);
+
+  const [hashtags, setHashtags] = useState([]);
+  const [hashtagInput, setHashtagInput] = useState('');
+
   const { data: plantsData, isLoading: plantsLoading } = useMyPlants(1);
   const createPost = useCreatePost();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(postSchema),
   });
 
   const plants = plantsData?.itens || [];
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      
+      const tagLimpa = hashtagInput.trim().replace(/^#/, '');
+      if (tagLimpa && !hashtags.includes(tagLimpa)) {
+        setHashtags([...hashtags, tagLimpa]);
+        setHashtagInput('');
+      }
+    }
+  };
+  const handleRemoveHashtag = (tagRemover) => {
+    setHashtags(hashtags.filter(tag => tag !== tagRemover));
+  };
+
   const onSubmit = (data) => {
     if (!selectedPlantId) return;
+    
     createPost.mutate({
       plantaId: selectedPlantId,
       conteudo: data.conteudo,
+      hashtags: hashtags,
+    }, {
+      onSuccess: () => {
+        setHashtags([]);
+        setHashtagInput('');
+        reset();
+      }
     });
   };
 
@@ -85,6 +112,34 @@ export default function CreatePostForm() {
         />
         {errors.conteudo && (
           <span className={styles.error}>{errors.conteudo.message}</span>
+        )}
+      </div>
+
+      <div className={styles.hashtagSection}>
+        <input
+          type="text"
+          className={styles.hashtagInput}
+          placeholder="Adicione tags (Enter ou Espaço)..."
+          value={hashtagInput}
+          onChange={(e) => setHashtagInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        
+        {hashtags.length > 0 && (
+          <div className={styles.tagsContainer}>
+            {hashtags.map((tag, index) => (
+              <span key={index} className={styles.tagBadge}>
+                #{tag}
+                <button 
+                  type="button" 
+                  onClick={() => handleRemoveHashtag(tag)} 
+                  className={styles.removeTagBtn}
+                >
+                  <X size={14} />
+                </button>
+              </span>
+            ))}
+          </div>
         )}
       </div>
 
