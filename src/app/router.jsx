@@ -25,8 +25,11 @@ const SearchPlantPage = lazy(() => import('../features/plants/pages/SearchPlantP
 const MyProfilePage = lazy(() => import('../features/profile/pages/MyProfilePage'));
 const UserProfilePage = lazy(() => import('../features/profile/pages/UserProfilePage'));
 const EditProfilePage = lazy(() => import('../features/profile/pages/EditProfilePage'));
+const FollowRequestsPage = lazy(() => import('../features/profile/pages/FollowRequestsPage'));
 
 const NotificationsPage = lazy(() => import('../features/notifications/pages/NotificationsPage'));
+const ComunidadesPage = lazy(() => import('../features/comunidade/pages/ComunidadesPage'));
+const ComunidadeDetailPage = lazy(() => import('../features/comunidade/pages/ComunidadeDetailPage'));
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 const EventsPage = lazy(() => import('../features/events/pages/EventsPage'));
@@ -54,10 +57,13 @@ export default function AppRouter() {
               <Route path="/buscar-planta" element={<SearchPlantPage />} />
               <Route path="/minhas-plantas" element={<MyPlantsPage />} />
               <Route path="/planta/:plantaId" element={<PlantDetailPage />} />
+              <Route path="/comunidades" element={<ComunidadesPage />} />
+              <Route path="/comunidade/:comunidadeId" element={<ComunidadeDetailPage />} />
               <Route path="/post/:postId" element={<PostDetailPage />} />
               <Route path="/criar-post" element={<CreatePostPage />} />
               <Route path="/perfil" element={<MyProfilePage />} />
               <Route path="/perfil/editar" element={<EditProfilePage />} />
+              <Route path="/perfil/solicitacoes" element={<FollowRequestsPage />} />
               <Route path="/usuario/:usuarioId" element={<UserProfilePage />} />
               <Route path="/notificacoes" element={<NotificationsPage />} />
               <Route path="/eventos" element={<EventsPage />} />

@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, RotateCcw, CheckCircle2, X, Zap } from 'lucide-react';
 import { useIdentifyPlant } from '../hooks/usePlants';
@@ -100,7 +101,7 @@ function IdleZone({ onFile }) {
   );
 }
 
-function PreviewZone({ imageUrl, onAnalyze, onReset, isPending }) {
+function PreviewZone({ imageUrl, onAnalyze, onReset, isPending, comentario, setComentario, criarPostagem, setCriarPostagem }) {
   return (
     <motion.div
       className={styles.card}
@@ -136,6 +137,19 @@ function PreviewZone({ imageUrl, onAnalyze, onReset, isPending }) {
         <RotateCcw size={15} />
         Escolher outra foto
       </button>
+
+      <div className={styles.postOptions}>
+        <label className={styles.postOptionLabel}>
+          <input type="checkbox" checked={criarPostagem} onChange={(e) => setCriarPostagem(e.target.checked)} />
+          Criar postagem após identificação
+        </label>
+        <textarea
+          className={styles.commentInput}
+          placeholder="Adicionar um comentário (opcional)"
+          value={comentario}
+          onChange={(e) => setComentario(e.target.value)}
+        />
+      </div>
     </motion.div>
   );
 }
@@ -187,6 +201,9 @@ export default function IdentifyPage() {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const identify = useIdentifyPlant();
+  const navigate = useNavigate();
+  const [comentario, setComentario] = useState('');
+  const [criarPostagem, setCriarPostagem] = useState(false);
 
   const handleFile = useCallback((f) => {
     setFile(f);
@@ -197,8 +214,26 @@ export default function IdentifyPage() {
   const handleAnalyze = () => {
     if (!file) return;
     setPhase('analyzing');
-    identify.mutate(file, {
+    identify.mutate({ file, comentario, criarPostagem }, {
       onError: () => setPhase('preview'),
+      onSuccess: (data) => {
+        const tryGetId = (obj) => {
+          if (!obj) return null;
+          if (typeof obj === 'string') return obj;
+          if (obj.id) return obj.id;
+          if (obj.plantaId) return obj.plantaId;
+          if (obj.planta && obj.planta.id) return obj.planta.id;
+          if (obj.dados) return tryGetId(obj.dados);
+          return null;
+        };
+
+        const newId = tryGetId(data);
+        if (newId) {
+          navigate(`/planta/${newId}`);
+        } else {
+          setPhase('preview');
+        }
+      },
     });
   };
 
@@ -221,6 +256,10 @@ export default function IdentifyPage() {
             onAnalyze={handleAnalyze}
             onReset={handleReset}
             isPending={identify.isPending}
+            comentario={comentario}
+            setComentario={setComentario}
+            criarPostagem={criarPostagem}
+            setCriarPostagem={setCriarPostagem}
           />
         )}
         {phase === 'analyzing' && (

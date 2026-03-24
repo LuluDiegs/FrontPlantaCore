@@ -23,6 +23,10 @@ export const profileService = {
     return api.post('/Usuario/foto-perfil', formData).then((r) => r.data);
   },
 
+  updatePrivacy(privado) {
+    return api.put('/Usuario/privacidade', { privado }).then((r) => r.data);
+  },
+
   follow(usuarioId) {
     return api.post(`/Usuario/seguir/${usuarioId}`).then((r) => r.data);
   },
@@ -41,5 +45,22 @@ export const profileService = {
     return api.get(`/Usuario/${usuarioId}/seguindo`, {
       params: { pagina, tamanho },
     }).then((r) => r.data);
+  },
+
+  // Follow request endpoints for private profiles
+  requestFollow(alvoId) {
+    return api.post(`/Usuario/solicitacao-seguir/${alvoId}`).then((r) => r.data);
+  },
+
+  getFollowRequests() {
+    return api.get('/Usuario/solicitacoes-seguir').then((r) => r.data);
+  },
+
+  acceptFollowRequest(solicitacaoId) {
+    return api.post(`/Usuario/solicitacoes-seguir/${solicitacaoId}/aceitar`).then((r) => r.data);
+  },
+
+  rejectFollowRequest(solicitacaoId) {
+    return api.post(`/Usuario/solicitacoes-seguir/${solicitacaoId}/rejeitar`).then((r) => r.data);
   },
 };

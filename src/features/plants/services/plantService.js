@@ -1,9 +1,16 @@
 import api from '../../../lib/axios';
 
 export const plantService = {
-  identify(file) {
+  // file: File | Blob
+  // comentario: optional string
+  // criarPostagem: optional boolean
+  identify(file, comentario = null, criarPostagem = null) {
     const formData = new FormData();
-    formData.append('foto', file);
+    // Backend expects PascalCase field names in multipart
+    formData.append('Foto', file);
+    if (comentario != null) formData.append('Comentario', comentario);
+    if (criarPostagem != null) formData.append('CriarPostagem', String(criarPostagem));
+
     return api.post('/Planta/identificar', formData, {
       timeout: 60000,
     }).then((r) => r.data);
@@ -20,6 +27,12 @@ export const plantService = {
   getMyPlants(pagina = 1, tamanho = 12) {
     return api.get('/Planta/minhas-plantas', {
       params: { pagina, tamanho },
+    }).then((r) => r.data);
+  },
+
+  searchMyPlants(termo, pagina = 1, tamanho = 10) {
+    return api.get('/Planta/minhas-plantas/buscar', {
+      params: { termo, pagina, tamanho },
     }).then((r) => r.data);
   },
 

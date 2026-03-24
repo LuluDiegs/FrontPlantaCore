@@ -22,9 +22,8 @@ export function usePlantDetail(plantaId) {
 
 export function useIdentifyPlant() {
   const navigate = useNavigate();
-
   return useMutation({
-    mutationFn: plantService.identify,
+    mutationFn: (payload) => plantService.identify(payload.file ?? payload, payload.comentario, payload.criarPostagem),
     onSuccess: (data) => {
       if (data.sucesso && data.dados?.id) {
         toast.success('Planta identificada!');
@@ -44,6 +43,15 @@ export function useSearchPlants() {
   return useMutation({
     mutationFn: ({ nomePlanta, pagina }) => plantService.search(nomePlanta, pagina),
     onError: () => toast.error('Erro ao buscar plantas'),
+  });
+}
+
+export function useSearchMyPlants(termo, pagina = 1) {
+  return useQuery({
+    queryKey: ['myPlantsSearch', termo, pagina],
+    queryFn: () => plantService.searchMyPlants(termo, pagina),
+    enabled: !!termo && termo.trim().length > 0,
+    select: (data) => data.dados ?? data,
   });
 }
 

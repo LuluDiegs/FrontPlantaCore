@@ -32,6 +32,7 @@ export function useExplore() {
   });
 }
 
+
 export function useUserPosts(usuarioId) {
   return useInfiniteQuery({
     queryKey: ['userPosts', usuarioId],
@@ -64,15 +65,17 @@ export function useCreatePost() {
 
   return useMutation({
     mutationFn: postService.create,
-    onSuccess: (data) => {
-      if (data.sucesso) {
+    onSuccess: (res) => {
+      const status = res?.status;
+      const body = res?.data ?? res;
+      if (status === 201 || body?.sucesso) {
         qc.invalidateQueries({ queryKey: ['feed'] });
         qc.invalidateQueries({ queryKey: ['userPosts'] });
         qc.invalidateQueries({ queryKey: ['myProfile'] });
         toast.success('Post publicado!');
         navigate('/feed');
       } else {
-        toast.error(data.mensagem || 'Erro ao publicar');
+        toast.error(body?.mensagem || 'Erro ao publicar');
       }
     },
     onError: (err) => {
@@ -185,8 +188,10 @@ export function useCreateComment() {
 
   return useMutation({
     mutationFn: postService.createComment,
-    onSuccess: (data, variables) => {
-      if (data.sucesso) {
+    onSuccess: (res, variables) => {
+      const status = res?.status;
+      const body = res?.data ?? res;
+      if (status === 201 || body?.sucesso) {
         qc.invalidateQueries({ queryKey: ['comments', variables.postId] });
         qc.invalidateQueries({ queryKey: ['post', variables.postId] });
         qc.invalidateQueries({ queryKey: ['feed'] });

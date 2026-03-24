@@ -2,7 +2,7 @@ import api from '../../../lib/axios';
 
 export const postService = {
   create(data) {
-    return api.post('/Post', data).then((r) => r.data);
+    return api.post('/Post', data).then((r) => ({ status: r.status, data: r.data }));
   },
 
   update(postId, conteudo) {
@@ -29,6 +29,10 @@ export const postService = {
     return api.get(`/Post/usuario/${usuarioId}`, { params: { pagina, tamanho } }).then((r) => r.data);
   },
 
+  // General search helper. tipo can be 'hashtag', 'categoria', or 'palavra-chave'.
+  // Defaults to 'palavra-chave' for general searches.
+  
+
   like(postId) {
     return api.post(`/Post/${postId}/curtir`).then((r) => r.data);
   },
@@ -42,7 +46,7 @@ export const postService = {
   },
 
   createComment(data) {
-    return api.post('/Post/comentario', data).then((r) => r.data);
+    return api.post('/Post/comentario', data).then((r) => ({ status: r.status, data: r.data }));
   },
 
   deleteComment(comentarioId) {

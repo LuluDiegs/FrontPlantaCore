@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { ArrowLeft, User, FileText } from 'lucide-react';
-import { useMyProfile, useUpdateProfile, useUploadProfilePhoto } from '../hooks/useProfile';
-import ChangePasswordModal from '../components/ChangePasswordModal';
-import DeleteAccountModal from '../components/DeleteAccountModal';
-import Avatar from '../../../shared/components/ui/Avatar';
-import Input from '../../../shared/components/ui/Input';
-import Button from '../../../shared/components/ui/Button';
-import Spinner from '../../../shared/components/ui/Spinner';
-import styles from './EditProfilePage.module.css';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { ArrowLeft, User, FileText } from 'lucide-react'
+import { useMyProfile, useUpdateProfile, useUploadProfilePhoto } from '../hooks/useProfile'
+import ChangePasswordModal from '../components/ChangePasswordModal'
+import DeleteAccountModal from '../components/DeleteAccountModal'
+import Avatar from '../../../shared/components/ui/Avatar'
+import Input from '../../../shared/components/ui/Input'
+import Button from '../../../shared/components/ui/Button'
+import Spinner from '../../../shared/components/ui/Spinner'
+import styles from './EditProfilePage.module.css'
 
 const editProfileSchema = z.object({
   nome: z.string().min(2, 'Mínimo de 2 caracteres').max(255),
   biografia: z.string().max(500, 'Máximo de 500 caracteres').optional().or(z.literal('')),
+  privado: z.boolean().optional(),
 });
 
 export default function EditProfilePage() {
@@ -27,7 +28,7 @@ export default function EditProfilePage() {
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors, isDirty } } = useForm({
     resolver: zodResolver(editProfileSchema),
   });
 
@@ -36,6 +37,7 @@ export default function EditProfilePage() {
       reset({
         nome: profile.nome || '',
         biografia: profile.biografia || '',
+        privado: !!profile.privado,
       });
     }
   }, [profile, reset]);
@@ -44,6 +46,7 @@ export default function EditProfilePage() {
     const changes = {};
     if (data.nome !== profile.nome) changes.nome = data.nome;
     if (data.biografia !== (profile.biografia || '')) changes.biografia = data.biografia;
+    if (typeof data.privado !== 'undefined' && data.privado !== !!profile.privado) changes.privado = data.privado;
 
     if (Object.keys(changes).length === 0) return;
 
@@ -74,12 +77,7 @@ export default function EditProfilePage() {
         <Avatar src={profile.fotoPerfil} alt={profile.nome} size="xl" />
         <label className={styles.photoBtn}>
           {uploadPhoto.isPending ? 'Enviando...' : 'Trocar foto'}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-            hidden
-          />
+          <input type="file" accept="image/*" onChange={handlePhotoChange} hidden />
         </label>
       </div>
 
@@ -109,19 +107,47 @@ export default function EditProfilePage() {
           )}
         </div>
 
+        <div className={styles.privacyGroup}>
+          <div className={styles.privacyTop}>
+            <div className={styles.switchWrap}>
+              <button
+                type="button"
+                role="switch"
+                aria-pressed={!!watch('privado')}
+                aria-checked={!!watch('privado')}
+                className={`${styles.switchButton} ${watch('privado') ? styles.on : ''}`}
+                onClick={() => setValue('privado', !watch('privado'), { shouldDirty: true })}
+              >
+                <span className={styles.switchTrack} />
+                <span className={styles.switchThumb} />
+              </button>
+            </div>
+
+            <div className={styles.privacyLabel}>
+              <span className={styles.privacyTitle}>Conta privada</span>
+            </div>
+
+            {/* keep field registered for form submission */}
+            <input type="checkbox" {...register('privado')} hidden />
+          </div>
+
+          <div className={styles.privacyMeta}>
+            <span className={`${styles.privacyBadge} ${watch('privado') ? styles.badgePrivate : styles.badgePublic}`}>
+              {watch('privado') ? 'Privado' : 'Público'}
+            </span>
+            <div className={styles.privacyHint}>
+              {watch('privado')
+                ? 'A conta está privada — apenas seus seguidores aprovados veem suas postagens.'
+                : 'Conta pública — qualquer pessoa pode ver suas postagens.'}
+            </div>
+          </div>
+        </div>
+
         <div className={styles.actions}>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => navigate('/perfil')}
-          >
+          <Button type="button" variant="ghost" onClick={() => navigate('/perfil')}>
             Cancelar
           </Button>
-          <Button
-            type="submit"
-            loading={updateProfile.isPending}
-            disabled={!isDirty}
-          >
+          <Button type="submit" loading={updateProfile.isPending} disabled={!isDirty}>
             Salvar
           </Button>
         </div>

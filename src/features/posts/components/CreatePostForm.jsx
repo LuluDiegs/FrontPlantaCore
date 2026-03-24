@@ -25,11 +25,9 @@ export default function CreatePostForm() {
   const plants = plantsData?.itens || [];
 
   const onSubmit = (data) => {
-    if (!selectedPlantId) return;
-    createPost.mutate({
-      plantaId: selectedPlantId,
-      conteudo: data.conteudo,
-    });
+    const payload = { conteudo: data.conteudo };
+    if (selectedPlantId) payload.plantaId = selectedPlantId;
+    createPost.mutate(payload);
   };
 
   return (
@@ -44,7 +42,7 @@ export default function CreatePostForm() {
 
         {!plantsLoading && !plants.length && (
           <p className={styles.hint}>
-            Você precisa ter pelo menos uma planta pra criar um post.
+            Você ainda não tem plantas salvas — é possível publicar sem associar uma planta.
           </p>
         )}
 
@@ -55,7 +53,8 @@ export default function CreatePostForm() {
                 key={plant.id}
                 type="button"
                 className={`${styles.plantOption} ${selectedPlantId === plant.id ? styles.selected : ''}`}
-                onClick={() => setSelectedPlantId(plant.id)}
+                onClick={() => setSelectedPlantId((prev) => (prev === plant.id ? null : plant.id))}
+                aria-pressed={selectedPlantId === plant.id}
               >
                 {plant.fotoPlanta ? (
                   <img src={plant.fotoPlanta} alt="" className={styles.plantImg} crossOrigin="anonymous" />
@@ -93,7 +92,7 @@ export default function CreatePostForm() {
         fullWidth
         size="lg"
         loading={createPost.isPending}
-        disabled={!selectedPlantId || createPost.isPending}
+        disabled={createPost.isPending}
       >
         Publicar
       </Button>

@@ -1,0 +1,23 @@
+.page {
+  padding: 16px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+}
+
+.item {
+  padding: 12px;
+  border: 1px solid var(--border-color, #e6e6e6);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions button + button {
+  margin-left: 8px;
+}

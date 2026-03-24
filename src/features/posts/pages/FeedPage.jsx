@@ -8,6 +8,7 @@ import Spinner from '../../../shared/components/ui/Spinner';
 import Button from '../../../shared/components/ui/Button';
 import useInfiniteScroll from '../../../shared/hooks/useInfiniteScroll';
 import styles from './FeedPage.module.css';
+import { useState } from 'react';
 
 export default function FeedPage() {
   const {

@@ -3,7 +3,7 @@ import { Settings, UserPlus, UserMinus } from 'lucide-react';
 import Avatar from '../../../shared/components/ui/Avatar';
 import Button from '../../../shared/components/ui/Button';
 import { compactNumber } from '../../../shared/utils/formatNumber';
-import { useToggleFollow } from '../hooks/useProfile';
+import { useToggleFollow, useRequestFollow } from '../hooks/useProfile';
 import styles from './ProfileHeader.module.css';
 
 export default function ProfileHeader({ profile, isOwn = false }) {
@@ -76,20 +76,39 @@ export default function ProfileHeader({ profile, isOwn = false }) {
             </Button>
           </Link>
         ) : (
-          <Button
-            variant={profile.userSegueEste ? 'ghost' : 'primary'}
-            size="sm"
-            onClick={handleFollowToggle}
-            loading={toggleFollow.isPending}
-          >
-            {profile.userSegueEste ? (
-              <><UserMinus size={16} /> Seguindo</>
-            ) : (
-              <><UserPlus size={16} /> Seguir</>
-            )}
-          </Button>
+          <ProfileActionButtons profile={profile} toggleFollow={toggleFollow} />
         )}
       </div>
     </div>
+  );
+}
+
+function ProfileActionButtons({ profile, toggleFollow }) {
+  const requestFollow = useRequestFollow();
+
+  const handleRequest = () => {
+    requestFollow.mutate(profile.id);
+  };
+
+  if (profile.userSegueEste) {
+    return (
+      <Button variant="ghost" size="sm" loading={toggleFollow.isPending}>
+        <UserMinus size={16} /> Seguindo
+      </Button>
+    );
+  }
+
+  if (profile.privado) {
+    return (
+      <Button variant="primary" size="sm" onClick={handleRequest} loading={requestFollow.isPending}>
+        Solicitar
+      </Button>
+    );
+  }
+
+  return (
+    <Button variant="primary" size="sm" onClick={() => toggleFollow.mutate({ usuarioId: profile.id, isFollowing: false })} loading={toggleFollow.isPending}>
+      <UserPlus size={16} /> Seguir
+    </Button>
   );
 }

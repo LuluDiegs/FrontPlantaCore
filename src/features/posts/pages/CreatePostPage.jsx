@@ -14,7 +14,7 @@ export default function CreatePostPage() {
       </button>
 
       <h1 className={styles.title}>Novo Post</h1>
-      <p className={styles.subtitle}>Compartilhe algo sobre uma das suas plantas</p>
+      <p className={styles.subtitle}>Compartilhe algo — você pode publicar sem associar uma planta</p>
 
       <CreatePostForm />
     </div>

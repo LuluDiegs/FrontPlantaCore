@@ -1,0 +1,36 @@
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(82, 183, 136, 0.14);
+  border-radius: 999px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex: 1;
+  min-width: max-content;
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: var(--color-text-mid);
+  font-size: 0.92rem;
+  font-weight: 700;
+  transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.tab:hover {
+  color: var(--color-forest);
+  background: rgba(216, 243, 220, 0.7);
+}
+
+.active {
+  background: var(--gradient-forest);
+  color: var(--color-white);
+  box-shadow: 0 8px 20px rgba(45, 106, 79, 0.18);
+}

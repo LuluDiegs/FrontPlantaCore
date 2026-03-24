@@ -36,4 +36,8 @@ export const authService = {
   deleteAccount(senha) {
     return api.delete('/Usuario/conta').then((r) => r.data);
   },
+
+  refreshToken(tokenRefresh) {
+    return api.post('/Autenticacao/refresh-token', { tokenRefresh }).then((r) => r.data);
+  },
 };

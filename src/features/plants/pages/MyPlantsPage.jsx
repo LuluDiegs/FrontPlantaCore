@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Flower2, Camera, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMyPlants } from '../hooks/usePlants';
+import { useSearchMyPlants } from '../hooks/usePlants';
 import PlantCard from '../components/PlantCard';
 import { SkeletonCard } from '../../../shared/components/ui/Skeleton';
 import EmptyState from '../../../shared/components/ui/EmptyState';
@@ -10,15 +11,18 @@ import styles from './MyPlantsPage.module.css';
 
 export default function MyPlantsPage() {
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchPage, setSearchPage] = useState(1);
   const { data, isLoading, refetch } = useMyPlants(page);
+  const { data: searchData, isLoading: isSearching, refetch: refetchSearch } = useSearchMyPlants(searchTerm, searchPage);
 
   // Auto-refetch quando volta para página (garante que plantas adicionadas apareçam)
   useEffect(() => {
     refetch();
   }, [page, refetch]);
 
-  const plants = data?.itens || [];
-  const totalPages = data?.totalPaginas || 1;
+  const plants = (searchTerm ? (searchData?.itens || []) : (data?.itens || []));
+  const totalPages = searchTerm ? (searchData?.totalPaginas || 1) : (data?.totalPaginas || 1);
 
   return (
     <div className={styles.page}>
@@ -38,7 +42,7 @@ export default function MyPlantsPage() {
         </div>
       </div>
 
-      {isLoading && (
+      {(isLoading || isSearching) && (
         <div className={styles.grid}>
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={i} />
@@ -46,7 +50,24 @@ export default function MyPlantsPage() {
         </div>
       )}
 
-      {!isLoading && !plants.length && (
+      <div className={styles.searchWrap}>
+        <div className={styles.searchInputWrap}>
+          <Search size={16} />
+          <input
+            className={styles.searchInput}
+            placeholder="Pesquisar nas minhas plantas"
+            value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setSearchPage(1); }}
+          />
+        </div>
+        {searchTerm && (
+          <Button variant="ghost" size="sm" onClick={() => { setSearchTerm(''); setSearchPage(1); refetch(); }}>
+            Limpar
+          </Button>
+        )}
+      </div>
+
+      {!isLoading && !isSearching && !plants.length && (
         <EmptyState
           icon={Flower2}
           title="Nenhuma planta ainda"

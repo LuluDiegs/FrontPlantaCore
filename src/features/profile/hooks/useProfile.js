@@ -43,10 +43,11 @@ export function useUpdateProfile() {
   const updateUser = useAuthStore((s) => s.updateUser);
 
   return useMutation({
-    mutationFn: async ({ nome, biografia }) => {
+    mutationFn: async ({ nome, biografia, privado }) => {
       const results = [];
       if (nome !== undefined) results.push(await profileService.updateName(nome));
       if (biografia !== undefined) results.push(await profileService.updateBio(biografia));
+      if (privado !== undefined) results.push(await profileService.updatePrivacy(privado));
       return results;
     },
     onSuccess: (_, variables) => {
@@ -68,6 +69,18 @@ export function useUploadProfilePhoto() {
       toast.success('Foto atualizada');
     },
     onError: () => toast.error('Erro ao enviar foto'),
+  });
+}
+
+export function useUpdatePrivacy() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ privado }) => profileService.updatePrivacy(privado),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['myProfile'] });
+      toast.success('Configuração de privacidade atualizada');
+    },
+    onError: () => toast.error('Erro ao atualizar privacidade'),
   });
 }
 
@@ -111,5 +124,50 @@ export function useToggleFollow() {
       qc.invalidateQueries({ queryKey: ['publicProfile', usuarioId] });
       qc.invalidateQueries({ queryKey: ['myProfile'] });
     },
+  });
+}
+
+export function useRequestFollow() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (alvoId) => profileService.requestFollow(alvoId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['publicProfile'] });
+      toast.success('Solicitação enviada');
+    },
+    onError: () => toast.error('Erro ao enviar solicitação'),
+  });
+}
+
+export function useSolicitacoes() {
+  return useQuery({
+    queryKey: ['followRequests'],
+    queryFn: profileService.getFollowRequests,
+    select: (d) => d.dados || d,
+  });
+}
+
+export function useAcceptSolicitacao() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (solicitacaoId) => profileService.acceptFollowRequest(solicitacaoId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['followRequests'] });
+      qc.invalidateQueries({ queryKey: ['myProfile'] });
+      toast.success('Solicitação aceita');
+    },
+    onError: () => toast.error('Erro ao aceitar solicitação'),
+  });
+}
+
+export function useRejectSolicitacao() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (solicitacaoId) => profileService.rejectFollowRequest(solicitacaoId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['followRequests'] });
+      toast.success('Solicitação rejeitada');
+    },
+    onError: () => toast.error('Erro ao rejeitar solicitação'),
   });
 }
