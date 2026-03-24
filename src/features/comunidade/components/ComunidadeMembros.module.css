@@ -1,0 +1,58 @@
+.container {
+	padding: 12px;
+}
+
+.list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--color-soft);
+}
+
+.userLink {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: inherit;
+	text-decoration: none;
+}
+
+.userInfo {
+	display: flex;
+	flex-direction: column;
+}
+
+.userName {
+	font-size: 0.95rem;
+}
+
+.userHandle {
+	font-size: 0.78rem;
+	color: var(--color-text-light);
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.adminBadge {
+	background: #e6f4ea;
+	color: #2b7a3a;
+	padding: 4px 8px;
+	border-radius: 6px;
+	margin-right: 8px;
+	font-size: 12px;
+}
+
+.item button[disabled] {
+	opacity: 0.6;
+}

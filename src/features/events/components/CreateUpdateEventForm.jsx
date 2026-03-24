@@ -44,10 +44,10 @@ export default function CreateUpdateEventForm({ event, onClose }) {
 
   const onSubmit = (data) => {
     const payload = {
-      Titulo: data.titulo,
-      Descricao: data.descricao,
-      Localizacao: data.localizacao,
-      DataInicio: new Date(data.dataInicio).toISOString(),
+      titulo: data.titulo,
+      descricao: data.descricao,
+      localizacao: data.localizacao,
+      dataInicio: new Date(data.dataInicio).toISOString(),
     };
 
     if (isEdit) {

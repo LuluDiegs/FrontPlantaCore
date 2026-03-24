@@ -1,0 +1,80 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 16px;
+	background: var(--color-white);
+	border: 1px solid var(--color-soft);
+	border-radius: 12px;
+}
+
+.plantPicker {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.plantGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 8px;
+}
+
+.plantOption {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 8px;
+	border: 2px solid var(--color-soft);
+	border-radius: 8px;
+	text-align: center;
+}
+
+.selected {
+	border-color: var(--color-forest);
+	background: var(--color-soft);
+}
+
+.plantImg {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.plantPlaceholder {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: var(--color-soft);
+}
+
+.textarea {
+	padding: 14px;
+	background: #f9fafb;
+	border: 2px solid transparent;
+	border-radius: 10px;
+	font-size: 0.95rem;
+	resize: vertical;
+	line-height: 1.6;
+}
+
+/* Make the comment box taller and match app spacing */
+.textarea {
+  min-height: 160px;
+  padding: 16px;
+  font-size: 1rem;
+}
+
+.formFooter {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+}
+
+.hint {
+	font-size: 0.85rem;
+	color: var(--color-text-light);
+}

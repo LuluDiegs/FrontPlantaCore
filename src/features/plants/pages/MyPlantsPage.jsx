@@ -12,17 +12,33 @@ import styles from './MyPlantsPage.module.css';
 export default function MyPlantsPage() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedTerm, setDebouncedTerm] = useState('');
   const [searchPage, setSearchPage] = useState(1);
   const { data, isLoading, refetch } = useMyPlants(page);
-  const { data: searchData, isLoading: isSearching, refetch: refetchSearch } = useSearchMyPlants(searchTerm, searchPage);
+  const { data: searchData, isLoading: isSearching, refetch: refetchSearch } = useSearchMyPlants(debouncedTerm, searchPage);
 
   // Auto-refetch quando volta para página (garante que plantas adicionadas apareçam)
   useEffect(() => {
     refetch();
   }, [page, refetch]);
 
-  const plants = (searchTerm ? (searchData?.itens || []) : (data?.itens || []));
-  const totalPages = searchTerm ? (searchData?.totalPaginas || 1) : (data?.totalPaginas || 1);
+  // Debounce search input to avoid flooding requests
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedTerm(searchTerm.trim()), 350);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  // While searching, keep showing previous items until new results arrive to avoid layout jumps
+  let plants = [];
+  let totalPages = 1;
+
+  if (searchTerm) {
+    plants = searchData?.itens ?? (isSearching ? (data?.itens ?? []) : []);
+    totalPages = searchData?.totalPaginas ?? (isSearching ? (data?.totalPaginas ?? 1) : 1);
+  } else {
+    plants = data?.itens ?? [];
+    totalPages = data?.totalPaginas ?? 1;
+  }
 
   return (
     <div className={styles.page}>
@@ -70,22 +86,36 @@ export default function MyPlantsPage() {
       {!isLoading && !isSearching && !plants.length && (
         <EmptyState
           icon={Flower2}
-          title="Nenhuma planta ainda"
-          description="Identifique ou busque plantas para começar sua coleção"
+          title={searchTerm ? 'Nenhuma planta encontrada' : 'Nenhuma planta ainda'}
+          description={searchTerm ? 'Não encontramos plantas com esse termo na sua coleção' : 'Identifique ou busque plantas para começar sua coleção'}
           action={
-            <Link to="/identificar">
-              <Button><Camera size={16} /> Identificar minha primeira planta</Button>
-            </Link>
+            searchTerm ? (
+              <Button onClick={() => { setSearchTerm(''); setSearchPage(1); refetch(); }}>
+                Limpar busca
+              </Button>
+            ) : (
+              <Link to="/identificar">
+                <Button><Camera size={16} /> Identificar minha primeira planta</Button>
+              </Link>
+            )
           }
         />
       )}
 
       {plants.length > 0 && (
         <>
-          <div className={styles.grid}>
-            {plants.map((plant) => (
-              <PlantCard key={plant.id} plant={plant} />
-            ))}
+          <div className={styles.gridWrap}>
+            <div className={styles.grid}>
+              {plants.map((plant) => (
+                <PlantCard key={plant.id} plant={plant} highlight={debouncedTerm} />
+              ))}
+            </div>
+
+            {isSearching && (
+              <div className={styles.searchOverlay} aria-hidden>
+                <div className={styles.overlayContent}>Atualizando...</div>
+              </div>
+            )}
           </div>
 
           {totalPages > 1 && (

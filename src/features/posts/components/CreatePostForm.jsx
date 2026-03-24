@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Flower2 } from 'lucide-react';
 import { useCreatePost } from '../hooks/usePosts';
-import { useMyPlants } from '../../plants/hooks/usePlants';
+import { useMyPlants, useSearchMyPlants } from '../../plants/hooks/usePlants';
 import Button from '../../../shared/components/ui/Button';
 import Spinner from '../../../shared/components/ui/Spinner';
 import styles from './CreatePostForm.module.css';
@@ -15,14 +15,26 @@ const postSchema = z.object({
 
 export default function CreatePostForm() {
   const [selectedPlantId, setSelectedPlantId] = useState(null);
-  const { data: plantsData, isLoading: plantsLoading } = useMyPlants(1);
+  const [plantsPage, setPlantsPage] = useState(1);
+  const [searchPage, setSearchPage] = useState(1);
+  const { data: plantsData, isLoading: plantsLoading } = useMyPlants(plantsPage);
+  const [term, setTerm] = useState('');
+  // reset search page when term changes
+  useEffect(() => { setSearchPage(1); }, [term]);
+  const { data: searchData, isLoading: searching } = useSearchMyPlants(term, searchPage);
   const createPost = useCreatePost();
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(postSchema),
   });
 
-  const plants = plantsData?.itens || [];
+  const plants = (term ? (searchData?.itens || []) : (plantsData?.itens || []));
+
+  // simple debounce for search input
+  useEffect(() => {
+    const t = setTimeout(() => {}, 200);
+    return () => clearTimeout(t);
+  }, [term]);
 
   const onSubmit = (data) => {
     const payload = { conteudo: data.conteudo };
@@ -38,7 +50,19 @@ export default function CreatePostForm() {
           Selecione uma planta
         </label>
 
-        {plantsLoading && <Spinner size="sm" />}
+        {(plantsLoading || searching) && <Spinner size="sm" />}
+
+        <div className={styles.searchRow}>
+          <input
+            placeholder="Pesquisar minhas plantas..."
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          {term && (
+            <button type="button" className={styles.clearBtn} onClick={() => setTerm('')}>Limpar</button>
+          )}
+        </div>
 
         {!plantsLoading && !plants.length && (
           <p className={styles.hint}>
@@ -67,6 +91,21 @@ export default function CreatePostForm() {
               </button>
             ))}
           </div>
+        )}
+
+        {/* pagination / load more */}
+        {term ? (
+          searchData?.temProxima ? (
+            <div className={styles.loadMoreWrap}>
+              <button type="button" className={styles.loadMoreBtn} onClick={() => setSearchPage((p) => p + 1)}>Carregar mais</button>
+            </div>
+          ) : null
+        ) : (
+          plantsData?.temProxima ? (
+            <div className={styles.loadMoreWrap}>
+              <button type="button" className={styles.loadMoreBtn} onClick={() => setPlantsPage((p) => p + 1)}>Carregar mais</button>
+            </div>
+          ) : null
         )}
 
         {!selectedPlantId && plants.length > 0 && (

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { usePublicProfile, useFollowers, useFollowing } from '../hooks/useProfile';
@@ -11,6 +12,7 @@ import { SkeletonProfile, SkeletonPost } from '../../../shared/components/ui/Ske
 import Spinner from '../../../shared/components/ui/Spinner';
 import EmptyState from '../../../shared/components/ui/EmptyState';
 import useInfiniteScroll from '../../../shared/hooks/useInfiniteScroll';
+import styles from '../../posts/pages/FeedPage.module.css';
 
 export default function UserProfilePage() {
   const { usuarioId } = useParams();
@@ -20,13 +22,24 @@ export default function UserProfilePage() {
   const followers = useFollowers(usuarioId);
   const following = useFollowing(usuarioId);
 
+  const [sortMode, setSortMode] = React.useState('recent');
+
+  const sortMap = {
+    recent: 'mais_recente',
+    liked: 'mais_curtido',
+    commented: 'mais_comentado',
+    oldest: 'mais_antigo',
+  };
+
+  const backendOrdenarPor = sortMap[sortMode] || 'mais_recente';
+
   const {
     data: posts,
     isLoading: postsLoading,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useUserPosts(usuarioId);
+  } = useUserPosts(usuarioId, { ordenarPor: backendOrdenarPor });
 
   const deletePost = useDeletePost();
   const { ref: scrollRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
@@ -82,9 +95,15 @@ export default function UserProfilePage() {
               />
             );
           }
-
           return (
             <>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                <div className={styles.sortButtons} role="tablist" aria-label="Ordenar posts">
+                  <button type="button" className={`${styles.sortBtn} ${sortMode === 'recent' ? styles.active : ''}`} onClick={() => setSortMode('recent')}>Recentes</button>
+                  <button type="button" className={`${styles.sortBtn} ${sortMode === 'liked' ? styles.active : ''}`} onClick={() => setSortMode('liked')}>Curtidos</button>
+                  <button type="button" className={`${styles.sortBtn} ${sortMode === 'commented' ? styles.active : ''}`} onClick={() => setSortMode('commented')}>Comentados</button>
+                </div>
+              </div>
               {posts.map((post) => (
                 <PostCard
                   key={post.id}

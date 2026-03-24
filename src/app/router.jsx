@@ -16,6 +16,7 @@ const FeedPage = lazy(() => import('../features/posts/pages/FeedPage'));
 const ExplorePage = lazy(() => import('../features/posts/pages/ExplorePage'));
 const PostDetailPage = lazy(() => import('../features/posts/pages/PostDetailPage'));
 const CreatePostPage = lazy(() => import('../features/posts/pages/CreatePostPage'));
+const SavedPostsPage = lazy(() => import('../features/posts/pages/SavedPostsPage'));
 
 const IdentifyPage = lazy(() => import('../features/plants/pages/IdentifyPage'));
 const MyPlantsPage = lazy(() => import('../features/plants/pages/MyPlantsPage'));
@@ -61,6 +62,7 @@ export default function AppRouter() {
               <Route path="/comunidade/:comunidadeId" element={<ComunidadeDetailPage />} />
               <Route path="/post/:postId" element={<PostDetailPage />} />
               <Route path="/criar-post" element={<CreatePostPage />} />
+              <Route path="/salvos" element={<SavedPostsPage />} />
               <Route path="/perfil" element={<MyProfilePage />} />
               <Route path="/perfil/editar" element={<EditProfilePage />} />
               <Route path="/perfil/solicitacoes" element={<FollowRequestsPage />} />

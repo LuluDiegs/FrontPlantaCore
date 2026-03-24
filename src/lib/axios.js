@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { useAuthStore } from '../features/auth/stores/authStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7123/api/v1';
+// Prefer explicit `VITE_API_URL` in env; otherwise call same-origin `/api/v1`
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 const IS_MOCK = import.meta.env.VITE_MOCK_API === 'true';
 
 const toCamelCase = (str) => {
@@ -64,12 +66,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-if (IS_MOCK) {
-  import('../mocks/mockAdapter').then(({ default: mockAdapter }) => {
-    api.defaults.adapter = mockAdapter;
-    console.log('%c[PlantID] Modo Mock ativado', 'color: #52B788; font-weight: bold');
-  });
-}
+// NOTE: Mock adapter removed to force usage of the real backend API.
+// To enable mocks locally for debugging, re-enable the import above intentionally.
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -101,7 +99,11 @@ api.interceptors.request.use(
     }
 
     if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
-      config.data = transformKeysToPascalCase(config.data);
+      // Allow requests to opt-out of PascalCase transform by setting header `X-Skip-PascalCase: true`.
+      const skip = config.headers && (config.headers['X-Skip-PascalCase'] === true || config.headers['x-skip-pascalcase'] === 'true');
+      if (!skip) {
+        config.data = transformKeysToPascalCase(config.data);
+      }
     }
 
     return config;
@@ -118,6 +120,13 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    // Log 401 for visibility
+    // eslint-disable-next-line no-console
+    console.warn('[axios] request failed with status', error.response?.status, 'url', originalRequest?.url);
+
+    // Log response body when available to help debugging 400/500 errors
+    // eslint-disable-next-line no-console
+    if (error.response?.data) console.error('[axios] response body:', error.response.data);
 
     if (
       error.response?.status !== 401 ||
@@ -150,30 +159,88 @@ api.interceptors.response.use(
       const refreshToken = state?.tokens?.tokenRefresh;
       if (!refreshToken) throw new Error('No refresh token');
 
-      const { data } = await axios.post(`${API_BASE_URL}/Autenticacao/refresh-token`, {
+      // Log attempt (masked token) for debugging
+      try {
+        // eslint-disable-next-line no-console
+        const masked = typeof refreshToken === 'string' && refreshToken.length > 8 ? `${refreshToken.slice(0,6)}...${refreshToken.slice(-4)}` : refreshToken;
+        // eslint-disable-next-line no-console
+        console.info('[axios] attempting token refresh with refreshToken=', masked);
+      } catch (e) {
+        // ignore logging errors
+      }
+
+      const refreshResp = await axios.post(`${API_BASE_URL}/Autenticacao/refresh-token`, {
         tokenRefresh: refreshToken,
       });
 
-      if (data.sucesso && data.dados) {
-        const newTokens = {
-          tokenAcesso: data.dados.tokenAcesso,
-          tokenRefresh: data.dados.tokenRefresh,
-        };
-
-        // Atualiza o Zustand store via localStorage
-        const currentState = JSON.parse(stored);
-        currentState.state.tokens = newTokens;
-        localStorage.setItem('plantid-auth', JSON.stringify(currentState));
-
-        originalRequest.headers.Authorization = `Bearer ${newTokens.tokenAcesso}`;
-        processQueue(null, newTokens.tokenAcesso);
-
-        return api(originalRequest);
+      const refreshBody = refreshResp?.data;
+      // Log response for diagnostics
+      try {
+        // eslint-disable-next-line no-console
+        console.info('[axios] refresh endpoint status=', refreshResp.status, 'body=', refreshBody);
+      } catch (e) {
+        // ignore
       }
 
-      throw new Error('Refresh failed');
+      // Accept either wrapped { sucesso, dados: { tokenAcesso, tokenRefresh } }
+      // or direct { tokenAcesso, tokenRefresh }
+      // Try multiple shapes for token payload to be resilient to backend variations
+      const extractTokens = (body) => {
+        if (!body || typeof body !== 'object') return null;
+
+        // direct
+        if (body.tokenAcesso && body.tokenRefresh) return { tokenAcesso: body.tokenAcesso, tokenRefresh: body.tokenRefresh };
+
+        // dados.{tokenAcesso,tokenRefresh}
+        if (body.dados && body.dados.tokenAcesso && body.dados.tokenRefresh) {
+          return { tokenAcesso: body.dados.tokenAcesso, tokenRefresh: body.dados.tokenRefresh };
+        }
+
+        // dados.tokens or dados.tokens.{tokenAcesso,tokenRefresh}
+        if (body.dados && body.dados.tokens && body.dados.tokens.tokenAcesso && body.dados.tokens.tokenRefresh) {
+          return { tokenAcesso: body.dados.tokens.tokenAcesso, tokenRefresh: body.dados.tokens.tokenRefresh };
+        }
+
+        // nested one-level (ex.: sucesso:true, dados:{ tokens: { access, refresh } })
+        if (body.tokens && body.tokens.tokenAcesso && body.tokens.tokenRefresh) {
+          return { tokenAcesso: body.tokens.tokenAcesso, tokenRefresh: body.tokens.tokenRefresh };
+        }
+
+        // fallback: maybe different naming (accessToken/refreshToken)
+        if (body.accessToken && body.refreshToken) return { tokenAcesso: body.accessToken, tokenRefresh: body.refreshToken };
+        if (body.dados && body.dados.accessToken && body.dados.refreshToken) return { tokenAcesso: body.dados.accessToken, tokenRefresh: body.dados.refreshToken };
+
+        return null;
+      };
+
+      let newTokens = extractTokens(refreshBody);
+
+      if (!newTokens) throw new Error('Refresh failed or returned unexpected payload');
+
+      // Atualiza o Zustand store via localStorage
+      const currentState = JSON.parse(stored);
+      currentState.state = currentState.state || {};
+      currentState.state.tokens = newTokens;
+      localStorage.setItem('plantid-auth', JSON.stringify(currentState));
+
+      // Also sync tokens into the in-memory Zustand store so app state stays consistent
+      try {
+        if (useAuthStore && typeof useAuthStore.setState === 'function') {
+          // Merge tokens into existing state
+          useAuthStore.setState((s) => ({ ...s, tokens: newTokens }));
+        }
+      } catch (e) {
+        // ignore sync errors
+      }
+
+      originalRequest.headers.Authorization = `Bearer ${newTokens.tokenAcesso}`;
+      processQueue(null, newTokens.tokenAcesso);
+
+      return api(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
+      // eslint-disable-next-line no-console
+      console.error('[axios] refresh failed:', refreshError);
 
       // Limpa auth e redireciona para login
       localStorage.removeItem('plantid-auth');

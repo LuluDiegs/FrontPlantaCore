@@ -78,6 +78,33 @@
   color: #5d7b69;
 }
 
+/* Tabs */
+.tabHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tabButton {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  border-radius: 12px;
+  color: #356a53;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabButton:hover {
+  background: rgba(86, 184, 134, 0.06);
+}
+
+.active {
+  background: #e7f8ee;
+  border-color: #cfeedf;
+}
+
 .postForm {
   margin-top: 18px;
   display: flex;
@@ -101,6 +128,33 @@
 .postForm textarea:focus {
   border-color: #56b886;
   box-shadow: 0 0 0 3px rgba(86, 184, 134, 0.12);
+}
+
+/* Admin area styles */
+.adminSection {
+  background: #f7fbf6;
+  border: 1px solid #e2f1e8;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.adminColumn {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.adminControls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.adminActions {
+  display: flex;
+  gap: 8px;
 }
 
 .postFormActions {

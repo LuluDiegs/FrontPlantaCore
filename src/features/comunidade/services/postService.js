@@ -1,4 +1,4 @@
-import api from '../../../shared/services/api';
+import api from '../../../lib/axios';
 
 export const postService = {
   create: async (payload) => {

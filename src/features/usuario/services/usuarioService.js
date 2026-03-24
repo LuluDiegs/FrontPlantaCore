@@ -56,6 +56,11 @@ export const usuarioService = {
     return api.get(`/Usuario/${usuarioId}/posts`, { params: { pagina, tamanho } }).then((r) => r.data);
   },
 
+  getSavedPosts(pagina = 1, tamanho = 10) {
+    // Returns posts saved by the current authenticated user
+    return api.get('/Usuario/posts-salvos', { params: { pagina, tamanho } }).then((r) => r.data);
+  },
+
   // Reativacao de conta (endpoints auxiliares do backend)
   requestReactivate(email) {
     return api.post('/Usuario/reativar/solicitar', { email }).then((r) => r.data);

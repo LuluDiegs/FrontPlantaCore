@@ -4,14 +4,83 @@ import { ArrowLeft, MessageSquare, Users, Send } from 'lucide-react';
 import Button from '../../../shared/components/ui/Button';
 import Spinner from '../../../shared/components/ui/Spinner';
 import EmptyState from '../../../shared/components/ui/EmptyState';
-import { useCreatePost } from '../../posts/hooks/usePost';
+import CriarPostComunidade from '../../posts/components/CriarPostComunidade';
+import FeedComunidade from '../../posts/components/FeedComunidade';
 import {
   useComunidadeById,
   useComunidadePosts,
   useJoinComunidade,
   useMinhasComunidades,
+  useUpdateComunidade,
+  useDeleteComunidade,
+  useSolicitarEntrada,
+  useAdmins,
 } from '../hooks/useComunidade';
 import styles from './ComunidadeDetailPage.module.css';
+import ComunidadeMembros from '../components/ComunidadeMembros';
+import ComunidadeSolicitacoes from '../components/ComunidadeSolicitacoes';
+import ConfirmModal from '../../../shared/components/ui/ConfirmModal';
+import { useAuthStore } from '../../auth/stores/authStore';
+
+function AdminSection({ comunidadeId, comunidade }) {
+  const adminsQuery = useAdmins(comunidadeId);
+  const currentUserId = useAuthStore((s) => s.user?.id);
+
+  const updateMutation = useUpdateComunidade();
+  const deleteMutation = useDeleteComunidade();
+
+  // Keep state hooks at top level so hook order doesn't change between renders
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const admins = adminsQuery.data || [];
+  const isAdminByBackend = Boolean(
+    comunidade?.ehAdmin || comunidade?.isAdmin || comunidade?.admin || comunidade?.souAdmin
+  );
+
+  const isAdmin = isAdminByBackend || admins.some((a) => String(a?.id || a?.usuarioId) === String(currentUserId));
+
+  if (!isAdmin) return null;
+  const handleTogglePrivacy = () => {
+    const novaPrivada = !Boolean(comunidade?.privada ?? comunidade?.isPrivate ?? comunidade?.privada);
+    updateMutation.mutate({ comunidadeId, payload: { privada: novaPrivada } });
+  };
+
+  const handleDelete = () => setConfirmDeleteOpen(true);
+
+  const doDelete = () => {
+    deleteMutation.mutate(comunidadeId);
+    setConfirmDeleteOpen(false);
+  };
+
+  return (
+    <section className={styles.adminSection}>
+      <div className={styles.adminColumn}>
+        <div className={styles.adminControls}>
+          <ComunidadeSolicitacoes comunidadeId={comunidadeId} />
+
+          <div className={styles.adminActions}>
+            <Button variant="ghost" onClick={handleTogglePrivacy} loading={updateMutation.isLoading}>
+              {comunidade?.privada || comunidade?.isPrivate ? 'Tornar pública' : 'Tornar privada'}
+            </Button>
+
+            <Button variant="danger" onClick={handleDelete} loading={deleteMutation.isLoading}>
+              Excluir comunidade
+            </Button>
+          </div>
+        </div>
+      </div>
+      <ConfirmModal
+        open={confirmDeleteOpen}
+        title="Excluir comunidade"
+        description="Tem certeza que deseja excluir esta comunidade? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={doDelete}
+        loading={deleteMutation.isLoading}
+      />
+    </section>
+  );
+}
 
 function normalizeList(data) {
   if (Array.isArray(data)) return data;
@@ -46,13 +115,25 @@ function getComunidadeId(comunidade) {
 
 export default function ComunidadeDetailPage() {
   const { comunidadeId } = useParams();
-  const [conteudo, setConteudo] = useState('');
+  const [activeTab, setActiveTab] = useState('posts');
+  const [showCreate, setShowCreate] = useState(false);
+  const [sortMode, setSortMode] = useState('recent');
+
+  const sortMap = {
+    recent: 'mais_recente',
+    liked: 'mais_curtido',
+    commented: 'mais_comentado',
+    oldest: 'mais_antigo',
+  };
+
+  const backendOrdenarPor = sortMap[sortMode] || 'mais_recente';
+  
 
   const comunidadeQuery = useComunidadeById(comunidadeId);
   const postsQuery = useComunidadePosts(comunidadeId);
   const minhasQuery = useMinhasComunidades();
   const joinMutation = useJoinComunidade();
-  const createPostMutation = useCreatePost(comunidadeId);
+  const solicitarEntrada = useSolicitarEntrada();
 
   const comunidade = comunidadeQuery.data ?? {};
   const posts = useMemo(() => normalizeList(postsQuery.data), [postsQuery.data]);
@@ -98,21 +179,15 @@ export default function ComunidadeDetailPage() {
     0;
 
   const handleEntrar = () => {
-    joinMutation.mutate(comunidadeId);
+    const isPrivate = Boolean(comunidade?.privada ?? comunidade?.isPrivate ?? comunidade?.privada);
+    if (isPrivate) {
+      solicitarEntrada.mutate(comunidadeId);
+    } else {
+      joinMutation.mutate(comunidadeId);
+    }
   };
 
-  const handleCriarPost = async (e) => {
-    e.preventDefault();
-
-    if (!conteudo.trim()) return;
-
-    await createPostMutation.mutateAsync({
-      conteudo: conteudo.trim(),
-      comunidadeId,
-    });
-
-    setConteudo('');
-  };
+  
 
   if (comunidadeQuery.isLoading || minhasQuery.isLoading) {
     return (
@@ -159,98 +234,67 @@ export default function ComunidadeDetailPage() {
           </Button>
         )}
       </section>
+      {/* Admin panel: membros e solicitações */}
+      {/** Show admin controls if current user is admin or the comunidade payload marks them as admin */}
+      <AdminSection comunidadeId={comunidadeId} comunidade={comunidade} />
 
-      {participando && (
-        <section className={styles.createPostCard}>
-          <div className={styles.sectionHeader}>
-            <h2>Criar publicação</h2>
-            <p>
-              Compartilhe uma dica, foto, dúvida ou experiência com a comunidade.
-            </p>
-          </div>
+      <section className={styles.createPostCard}>
+        <div className={styles.sectionHeader}>
+          <h2>{participando ? 'Criar publicação' : 'Participe para publicar'}</h2>
+          <p>
+            {participando
+              ? 'Compartilhe uma dica, foto, dúvida ou experiência com a comunidade.'
+              : 'Entre na comunidade para compartilhar dicas, fotos e experiências.'}
+          </p>
 
-          <form onSubmit={handleCriarPost} className={styles.postForm}>
-            <textarea
-              value={conteudo}
-              onChange={(e) => setConteudo(e.target.value)}
-              placeholder="Escreva algo para a comunidade..."
-              rows={5}
-            />
-
-            <div className={styles.postFormActions}>
-              <Button
-                type="submit"
-                loading={createPostMutation.isPending}
-                disabled={!conteudo.trim()}
-              >
-                <Send size={16} />
-                Publicar
+          {participando ? (
+            <div style={{marginTop:12}}>
+              <Button onClick={() => setShowCreate((s) => !s)}>
+                {showCreate ? 'Cancelar' : 'Novo post'}
               </Button>
             </div>
-          </form>
-        </section>
-      )}
+          ) : null}
+        </div>
 
-      {!participando && (
-        <section className={styles.createPostCard}>
-          <div className={styles.sectionHeader}>
-            <h2>Participe para publicar</h2>
-            <p>
-              Entre na comunidade para compartilhar dicas, fotos e experiências.
-            </p>
+        {participando && showCreate && (
+          <div style={{marginTop:12}}>
+            <CriarPostComunidade comunidadeId={comunidadeId} />
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       <section className={styles.postsCard}>
         <div className={styles.sectionHeader}>
-          <h2>Posts da comunidade</h2>
+          <div className={styles.tabHeader}>
+            <button
+              className={`${styles.tabButton} ${activeTab === 'posts' ? styles.active : ''}`}
+              onClick={() => setActiveTab('posts')}
+            >
+              Posts
+            </button>
+            <button
+              className={`${styles.tabButton} ${activeTab === 'members' ? styles.active : ''}`}
+              onClick={() => setActiveTab('members')}
+            >
+              Membros
+            </button>
+          </div>
           <p>Veja o que a galera está compartilhando por aqui.</p>
         </div>
 
-        {postsQuery.isLoading && (
-          <div className={styles.loadingBox}>
-            <Spinner />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className={styles.sortButtons} role="tablist" aria-label="Ordenar posts">
+              <button type="button" className={`${styles.sortBtn} ${sortMode === 'recent' ? styles.active : ''}`} onClick={() => setSortMode('recent')}>Recentes</button>
+              <button type="button" className={`${styles.sortBtn} ${sortMode === 'liked' ? styles.active : ''}`} onClick={() => setSortMode('liked')}>Curtidos</button>
+              <button type="button" className={`${styles.sortBtn} ${sortMode === 'commented' ? styles.active : ''}`} onClick={() => setSortMode('commented')}>Comentados</button>
+            </div>
           </div>
-        )}
+        </div>
 
-        {!postsQuery.isLoading && posts.length === 0 && (
-          <EmptyState
-            title="Ainda não há posts"
-            description="Essa comunidade ainda não tem publicações. Seja a primeira pessoa a movimentar esse espaço."
-          />
-        )}
-
-        {!postsQuery.isLoading && posts.length > 0 && (
-          <div className={styles.postsList}>
-            {posts.map((post) => (
-              <article key={post.id} className={styles.postItem}>
-                <div className={styles.postHeader}>
-                  <div className={styles.avatar}>
-                    {(post?.autor?.nome || post?.usuarioNome || 'U')
-                      .charAt(0)
-                      .toUpperCase()}
-                  </div>
-
-                  <div>
-                    <strong>
-                      {post?.autor?.nome || post?.usuarioNome || 'Usuário'}
-                    </strong>
-                    <span>
-                      {post?.dataCriacao
-                        ? new Date(post.dataCriacao).toLocaleString('pt-BR')
-                        : 'Agora'}
-                    </span>
-                  </div>
-                </div>
-
-                <p className={styles.postContent}>
-                  {post?.conteudo || 'Sem conteúdo.'}
-                </p>
-              </article>
-            ))}
-          </div>
-        )}
+        {activeTab === 'posts' && <FeedComunidade comunidadeId={comunidadeId} ordenarPor={backendOrdenarPor} />}
+        {activeTab === 'members' && <ComunidadeMembros comunidadeId={comunidadeId} />}
       </section>
     </div>
   );

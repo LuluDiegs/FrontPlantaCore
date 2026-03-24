@@ -182,7 +182,7 @@ const handlers = {
   },
 
   'POST /Planta/buscar': (config) => {
-    const { pagina = 0 } = getBody(config);
+    const { pagina = 1 } = getBody(config);
     return mockResponse(ok({
       itens: searchResults,
       pagina,
@@ -210,8 +210,20 @@ const handlers = {
   },
 
   'GET /Planta/minhas-plantas': (config) => {
-    const { pagina = 1, tamanho = 12 } = getParams(config);
+    const { pagina = 1, tamanho = 10 } = getParams(config);
     return mockResponse(ok(paginate(mockPlants, Number(pagina), Number(tamanho))));
+  },
+
+  'GET /Planta/minhas-plantas/buscar': (config) => {
+    const { termo = '', pagina = 1, tamanho = 10 } = getParams(config);
+    const term = (termo || '').toString().toLowerCase();
+    const filtered = mockPlants.filter((p) => {
+      const nome = (p.nome || '').toString().toLowerCase();
+      const nomeCientifico = (p.nomeCientifico || '').toString().toLowerCase();
+      return nome.includes(term) || nomeCientifico.includes(term);
+    });
+
+    return mockResponse(ok(paginate(filtered, Number(pagina), Number(tamanho))));
   },
 
   'GET /Planta/:id': (config, [plantaId]) => {
@@ -434,7 +446,7 @@ export default async function mockAdapter(config) {
     if (params !== null) {
       const response = handlers[route](config, params);
       response.config = config;
-      console.log(`[Mock] ${method} /${cleanUrl}`, response.data?.dados ? '✓' : '');
+      // mock log removed
       return response;
     }
   }

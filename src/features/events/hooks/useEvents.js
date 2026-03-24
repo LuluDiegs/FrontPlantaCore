@@ -17,7 +17,12 @@ export function useEvents() {
     queryKey: ['events'],
     queryFn: async () => {
       const data = await eventsService.getAll();
-      return data.map(mapEvent);
+      const items = data?.dados ?? data;
+      return Array.isArray(items) ? items.map(mapEvent) : [];
+    },
+    onError: (err) => {
+      const msg = err?.response?.data?.mensagem || 'Erro ao carregar eventos';
+      toast.error(msg);
     },
   });
 }
@@ -27,9 +32,14 @@ export function useEvent(id) {
     queryKey: ['event', id],
     queryFn: async () => {
       const data = await eventsService.getById(id);
-      return mapEvent(data);
+      const item = data?.dados ?? data;
+      return item ? mapEvent(item) : null;
     },
     enabled: !!id,
+    onError: (err) => {
+      const msg = err?.response?.data?.mensagem || 'Erro ao carregar evento';
+      toast.error(msg);
+    },
   });
 }
 

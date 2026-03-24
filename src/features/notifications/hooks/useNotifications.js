@@ -1,3 +1,11 @@
+// Hook para configurações de notificações
+export function useNotificationSettings() {
+  return useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: notificationService.getConfiguracoes,
+    retry: 1,
+  });
+}
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { notificationService } from '../services/notificationService';
@@ -7,16 +15,37 @@ export function useNotifications() {
     queryKey: ['notifications'],
     queryFn: notificationService.getAll,
     select: (data) => {
-      // Backend retorna: notificacoesSociais, lembretes, totalNaoLidas
-      const notificacoesSociais = data.dados?.notificacoesSociais || [];
-      const lembretes = data.dados?.lembretes || [];
-      const all = [...notificacoesSociais, ...lembretes];
+      // Suporte a múltiplos formatos de backend
+      let notificacoesSociais = [];
+      let lembretes = [];
+      let all = [];
+      let unreadCount = 0;
+
+      if (data.dados) {
+        notificacoesSociais = data.dados.notificacoesSociais || [];
+        lembretes = data.dados.lembretes || [];
+        unreadCount = data.dados.totalNaoLidas ?? 0;
+      } else if (Array.isArray(data)) {
+        all = data;
+        unreadCount = all.filter(n => !n.lida).length;
+      } else if (data.notificacoes) {
+        all = data.notificacoes;
+        unreadCount = data.totalNaoLidas ?? all.filter(n => !n.lida).length;
+      } else {
+        notificacoesSociais = data.notificacoesSociais || [];
+        lembretes = data.lembretes || [];
+        unreadCount = data.totalNaoLidas ?? 0;
+      }
+
+      if (all.length === 0) {
+        all = [...notificacoesSociais, ...lembretes];
+      }
 
       return {
         notifications: all,
         notificacoesSociais,
         lembretes,
-        unreadCount: data.dados?.totalNaoLidas || 0,
+        unreadCount,
       };
     },
     retry: 1,

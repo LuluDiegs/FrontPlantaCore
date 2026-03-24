@@ -25,6 +25,43 @@
   gap: 8px;
 }
 
+.searchRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--muted-200);
+  border-radius: 8px;
+}
+
+.clearBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted-600);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.loadMoreBtn {
+  background: transparent;
+  border: 1px solid var(--muted-200);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text-mid);
+  font-weight: 600;
+}
+
 .plantOption {
   display: flex;
   flex-direction: column;

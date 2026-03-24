@@ -64,6 +64,16 @@ export function useConfirmEmail() {
 export function useResendConfirmation() {
   return useMutation({
     mutationFn: authService.resendConfirmation,
+    onSuccess: (data) => {
+      if (data?.sucesso) {
+        toast.success(data.mensagem || 'Email de confirmação reenviado');
+      } else if (data?.mensagem) {
+        // backend may return message without sucesso flag
+        toast.success(data.mensagem);
+      } else {
+        toast.success('Pedido de confirmação enviado');
+      }
+    },
     onError: (err) => toast.error(extractError(err)),
   });
 }
@@ -71,6 +81,15 @@ export function useResendConfirmation() {
 export function useForgotPassword() {
   return useMutation({
     mutationFn: authService.forgotPassword,
+    onSuccess: (data) => {
+      if (data?.sucesso) {
+        toast.success(data.mensagem || 'Email enviado para redefinição de senha');
+      } else if (data?.mensagem) {
+        toast.success(data.mensagem);
+      } else {
+        toast.success('Email enviado para redefinição de senha');
+      }
+    },
     onError: (err) => toast.error(extractError(err)),
   });
 }

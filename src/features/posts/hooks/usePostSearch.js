@@ -6,10 +6,10 @@ export function usePostSearch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const searchHashtag = async (hashtag) => {
+  const searchHashtag = async (hashtag, ordenarPor) => {
     setLoading(true);
     try {
-      const data = await postService.searchByHashtag(hashtag);
+      const data = await postService.searchByHashtag(hashtag, 1, 50, ordenarPor);
       setResults(data);
       setError(null);
     } catch (e) {
@@ -19,10 +19,10 @@ export function usePostSearch() {
     }
   };
 
-  const searchCategoria = async (categoria) => {
+  const searchCategoria = async (categoria, ordenarPor) => {
     setLoading(true);
     try {
-      const data = await postService.searchByCategoria(categoria);
+      const data = await postService.searchByCategoria(categoria, 1, 50, ordenarPor);
       setResults(data);
       setError(null);
     } catch (e) {
@@ -32,10 +32,10 @@ export function usePostSearch() {
     }
   };
 
-  const searchPalavraChave = async (palavraChave) => {
+  const searchPalavraChave = async (palavraChave, ordenarPor) => {
     setLoading(true);
     try {
-      const data = await postService.searchByPalavraChave(palavraChave);
+      const data = await postService.searchByPalavraChave(palavraChave, 1, 50, ordenarPor);
       setResults(data);
       setError(null);
     } catch (e) {

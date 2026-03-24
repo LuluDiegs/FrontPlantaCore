@@ -3,11 +3,52 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { plantService } from '../services/plantService';
 
+function displayServerMessageAsToast(data, fallbackMessage, fallbackIsError = false) {
+  const msg = data?.mensagem || null;
+  if (!msg) {
+    if (fallbackMessage) {
+      if (fallbackIsError) toast.error(fallbackMessage);
+      else toast.success(fallbackMessage);
+    }
+    return;
+  }
+
+  const lowered = msg.toLowerCase();
+  const positive = /sucesso|identificad|criada|adicionad|salvo|atualizad|removida|removido|adicionou/i;
+
+  if (positive.test(lowered)) {
+    toast.success(msg);
+  } else {
+    toast.error(msg);
+  }
+}
+
 export function useMyPlants(pagina = 1) {
   return useQuery({
     queryKey: ['myPlants', pagina],
     queryFn: () => plantService.getMyPlants(pagina),
-    select: (data) => data.dados,
+    // Normalize backend wrapped responses `{sucesso,dados,meta}` to UI pagination shape
+    select: (data) => {
+      if (!data) return data;
+      // If backend returns wrapper { sucesso, dados: [...], meta: {...} }
+      if (data.sucesso && Array.isArray(data.dados)) {
+        const itens = data.dados;
+        const meta = data.meta || {};
+        return {
+          itens,
+          pagina: meta.pagina ?? 1,
+          tamanho: meta.tamanho ?? itens.length,
+          total: meta.total ?? itens.length,
+          totalPaginas: meta.totalPaginas ?? 1,
+          temProxima: meta.temProxima ?? false,
+          temAnterior: meta.temAnterior ?? false,
+        };
+      }
+
+      // If already in UI pagination shape, return as-is
+      return data;
+    },
+    keepPreviousData: true,
   });
 }
 
@@ -15,7 +56,7 @@ export function usePlantDetail(plantaId) {
   return useQuery({
     queryKey: ['plant', plantaId],
     queryFn: () => plantService.getById(plantaId),
-    select: (data) => data.dados,
+    select: (data) => data?.dados ?? data,
     enabled: !!plantaId,
   });
 }
@@ -25,11 +66,17 @@ export function useIdentifyPlant() {
   return useMutation({
     mutationFn: (payload) => plantService.identify(payload.file ?? payload, payload.comentario, payload.criarPostagem),
     onSuccess: (data) => {
-      if (data.sucesso && data.dados?.id) {
+      if (data?.sucesso && data.dados?.id) {
         toast.success('Planta identificada!');
         navigate(`/planta/${data.dados.id}`);
+      } else if (data?.dados && (data.dados.id || data.dados.plantaId)) {
+        // some backends return nested object without top-level sucesso flag
+        toast.success(data.mensagem || 'Planta identificada!');
+        const tryGetId = (obj) => obj.id || obj.plantaId || (obj.planta && obj.planta.id) || null;
+        const nid = tryGetId(data.dados);
+        if (nid) navigate(`/planta/${nid}`);
       } else {
-        toast.error(data.mensagem || 'Não foi possível identificar a planta');
+        displayServerMessageAsToast(data, 'Não foi possível identificar a planta');
       }
     },
     onError: (err) => {
@@ -51,7 +98,24 @@ export function useSearchMyPlants(termo, pagina = 1) {
     queryKey: ['myPlantsSearch', termo, pagina],
     queryFn: () => plantService.searchMyPlants(termo, pagina),
     enabled: !!termo && termo.trim().length > 0,
-    select: (data) => data.dados ?? data,
+    select: (data) => {
+      if (!data) return data;
+      if (data.sucesso && Array.isArray(data.dados)) {
+        const itens = data.dados;
+        const meta = data.meta || {};
+        return {
+          itens,
+          pagina: meta.pagina ?? 1,
+          tamanho: meta.tamanho ?? itens.length,
+          total: meta.total ?? itens.length,
+          totalPaginas: meta.totalPaginas ?? 1,
+          temProxima: meta.temProxima ?? false,
+          temAnterior: meta.temAnterior ?? false,
+        };
+      }
+      return data;
+    },
+    keepPreviousData: true,
   });
 }
 
@@ -62,23 +126,27 @@ export function useAddPlantFromSearch() {
   return useMutation({
     mutationFn: plantService.addFromSearch,
     onSuccess: (data) => {
-      console.log('[useAddPlantFromSearch] Response:', data);
-
-      if (data.sucesso && data.dados?.id) {
+      if (data?.sucesso && data.dados?.id) {
         toast.success('Planta adicionada!');
-        // Invalida minhas plantas para refresh automático
         qc.invalidateQueries({ queryKey: ['myPlants'] });
-        // Navega direto para a planta
         navigate(`/planta/${data.dados.id}`);
+      } else if (data?.dados && (data.dados.id || data.dados.plantaId)) {
+        toast.success(data.mensagem || 'Planta adicionada!');
+        qc.invalidateQueries({ queryKey: ['myPlants'] });
+        const id = data.dados.id || data.dados.plantaId || (data.dados.planta && data.dados.planta.id);
+        if (id) navigate(`/planta/${id}`);
       } else {
-        console.error('[useAddPlantFromSearch] Falha na resposta:', data);
-        toast.error(data.mensagem || 'Erro ao adicionar planta');
+        displayServerMessageAsToast(data, 'Erro ao adicionar planta');
       }
     },
     onError: (err) => {
-      console.error('[useAddPlantFromSearch] Erro:', err);
-      const msg = err.response?.data?.mensagem || err.message || 'Erro ao adicionar planta';
-      toast.error(msg);
+      const serverData = err.response?.data;
+      if (serverData) {
+        displayServerMessageAsToast(serverData, 'Erro ao adicionar planta');
+      } else {
+        const msg = err.message || 'Erro ao adicionar planta';
+        toast.error(msg);
+      }
     },
   });
 }

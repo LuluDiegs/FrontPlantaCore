@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Users } from 'lucide-react';
+import { Leaf, Users, Lock } from 'lucide-react';
 import Button from '../../../shared/components/ui/Button';
 import styles from './ComunidadeCard.module.css';
 
@@ -29,6 +29,11 @@ export default function ComunidadeCard({ comunidade, actionLabel, onAction, acti
         {memberCount > 0 && (
           <span className={styles.members}>
             <Users size={14} /> {memberCount}
+          </span>
+        )}
+        {Boolean(comunidade?.privada ?? comunidade?.isPrivate) && (
+          <span className={styles.private} title="Comunidade privada">
+            <Lock size={14} />
           </span>
         )}
       </div>

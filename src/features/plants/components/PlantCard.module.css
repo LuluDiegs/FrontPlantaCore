@@ -102,3 +102,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.highlight {
+  background: transparent;
+  padding: 0;
+  color: var(--color-forest);
+  font-weight: 700;
+  border-radius: 2px;
+}

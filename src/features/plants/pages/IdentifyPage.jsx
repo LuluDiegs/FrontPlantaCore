@@ -139,16 +139,25 @@ function PreviewZone({ imageUrl, onAnalyze, onReset, isPending, comentario, setC
       </button>
 
       <div className={styles.postOptions}>
-        <label className={styles.postOptionLabel}>
-          <input type="checkbox" checked={criarPostagem} onChange={(e) => setCriarPostagem(e.target.checked)} />
-          Criar postagem após identificação
-        </label>
+        <div className={styles.postOptionToggle}>
+          <div className={styles.postOptionLabel}>Criar postagem após identificação</div>
+          <label className={styles.toggleSwitch}>
+            <input type="checkbox" checked={criarPostagem} onChange={(e) => setCriarPostagem(e.target.checked)} />
+            <span className={styles.slider} />
+          </label>
+        </div>
+
         <textarea
           className={styles.commentInput}
-          placeholder="Adicionar um comentário (opcional)"
+          placeholder={criarPostagem ? 'Escreva um comentário para a postagem (opcional)...' : 'Ative "Criar postagem" para adicionar um comentário'}
           value={comentario}
           onChange={(e) => setComentario(e.target.value)}
+          disabled={!criarPostagem}
         />
+
+        <div className={styles.postMeta}>
+          <span className={styles.charCount}>{comentario.length}/300</span>
+        </div>
       </div>
     </motion.div>
   );

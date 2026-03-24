@@ -1,22 +1,22 @@
-import React, { useEffect } from 'react';
-import { useComunidade } from '../hooks/useComunidade';
-import { ComunidadeList } from '../components/ComunidadeList';
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import ComunidadeList from '../components/ComunidadeList';
+import { useComunidadesByUsuario, useJoinComunidade, useLeaveComunidade } from '../hooks/useComunidade';
 
 export function ComunidadeUserPage() {
   const { usuarioCore } = useParams();
-  const { comunidades, getByUser, join, leave, loading, error } = useComunidade();
+  const comunidadesQuery = useComunidadesByUsuario(usuarioCore);
+  const joinMutation = useJoinComunidade();
+  const leaveMutation = useLeaveComunidade();
 
-  useEffect(() => {
-    if (usuarioCore) getByUser(usuarioCore);
-  }, [usuarioCore]);
+  const comunidades = comunidadesQuery.data?.itens ?? comunidadesQuery.data ?? [];
 
   return (
     <div>
       <h2>Comunidades do Usuário</h2>
-      {loading && <div>Carregando...</div>}
-      {error && <div>Erro: {error.message}</div>}
-      <ComunidadeList comunidades={comunidades} onJoin={join} onLeave={leave} />
+      {comunidadesQuery.isLoading && <div>Carregando...</div>}
+      {comunidadesQuery.isError && <div>Erro ao carregar comunidades</div>}
+      <ComunidadeList comunidades={comunidades} onJoin={(id) => joinMutation.mutate(id)} onLeave={(id) => leaveMutation.mutate(id)} />
     </div>
   );
 }

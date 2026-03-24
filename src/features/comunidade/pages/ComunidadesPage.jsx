@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Search, Sparkles, Users, Plus } from 'lucide-react';
 import Button from '../../../shared/components/ui/Button';
 import Input from '../../../shared/components/ui/Input';
@@ -6,6 +6,7 @@ import Spinner from '../../../shared/components/ui/Spinner';
 import EmptyState from '../../../shared/components/ui/EmptyState';
 import ComunidadeCard from '../components/ComunidadeCard';
 import ComunidadeTabs from '../components/ComunidadeTabs';
+import ConfirmModal from '../../../shared/components/ui/ConfirmModal';
 import {
   useBuscarComunidades,
   useComunidades,
@@ -14,6 +15,7 @@ import {
   useJoinComunidade,
   useLeaveComunidade,
   useMinhasComunidades,
+  useSolicitarEntrada,
 } from '../hooks/useComunidade';
 import styles from './ComunidadesPage.module.css';
 
@@ -78,15 +80,18 @@ function isOwner(comunidade) {
 export default function ComunidadesPage() {
   const [activeTab, setActiveTab] = useState('todas');
   const [search, setSearch] = useState('');
-  const [form, setForm] = useState({ nome: '', descricao: '' });
+  const [debouncedTerm, setDebouncedTerm] = useState('');
+  const [form, setForm] = useState({ nome: '', descricao: '', privada: false });
+  const [confirm, setConfirm] = useState({ open: false, targetId: null, targetName: '' });
 
   const comunidadesQuery = useComunidades();
   const minhasQuery = useMinhasComunidades();
-  const buscarQuery = useBuscarComunidades(activeTab === 'buscar' ? search : '');
+  const buscarQuery = useBuscarComunidades(activeTab === 'buscar' ? debouncedTerm : '');
   const createMutation = useCreateComunidade();
   const joinMutation = useJoinComunidade();
   const leaveMutation = useLeaveComunidade();
   const deleteMutation = useDeleteComunidade();
+  const solicitarMutation = useSolicitarEntrada();
 
   const comunidades = useMemo(
     () => normalizeList(comunidadesQuery.data),
@@ -103,6 +108,12 @@ export default function ComunidadesPage() {
     [buscarQuery.data]
   );
 
+  // Debounce search input to avoid flooding requests
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedTerm(search.trim()), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+
   const minhasIds = useMemo(() => {
     return new Set(minhasComunidades.map((item) => getComunidadeId(item)));
   }, [minhasComunidades]);
@@ -116,7 +127,7 @@ export default function ComunidadesPage() {
     activeTab === 'minhas'
       ? minhasComunidades
       : activeTab === 'buscar'
-      ? comunidadesBusca
+      ? (search ? comunidadesBusca : comunidades)
       : comunidades;
 
   const heroText =
@@ -134,6 +145,7 @@ export default function ComunidadesPage() {
     await createMutation.mutateAsync({
       nome: form.nome.trim(),
       descricao: form.descricao.trim(),
+      privada: Boolean(form.privada),
     });
 
     setForm({ nome: '', descricao: '' });
@@ -145,18 +157,17 @@ export default function ComunidadesPage() {
 
     if (participating) {
       if (isOwner(comunidade)) {
-        const confirmDelete = window.confirm(
-          'Você criou essa comunidade.\n\nDeseja apagá-la?'
-        );
-
-        if (confirmDelete) {
-          deleteMutation.mutate(comunidadeId);
-        }
-
+        setConfirm({ open: true, targetId: comunidadeId, targetName: comunidade?.nome ?? 'esta comunidade' });
         return;
       }
 
       leaveMutation.mutate(comunidadeId);
+      return;
+    }
+
+    const isPrivate = Boolean(comunidade?.privada ?? comunidade?.isPrivate ?? comunidade?.privada);
+    if (isPrivate) {
+      solicitarMutation.mutate(comunidadeId);
       return;
     }
 
@@ -198,11 +209,31 @@ export default function ComunidadesPage() {
 
       {activeTab === 'buscar' && (
         <div className={styles.searchBox}>
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Busque por suculentas, orquídeas, jardinagem..."
-            icon={Search}
+          <div className={styles.searchWrap}>
+            <div className={styles.searchInputWrap}>
+              <Search size={16} />
+              <input
+                className={styles.searchInput}
+                placeholder="Busque por suculentas, orquídeas, jardinagem..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            {search && (
+              <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDebouncedTerm(''); }}>
+                Limpar
+              </Button>
+            )}
+          </div>
+
+          <ConfirmModal
+            open={confirm.open}
+            title="Excluir comunidade"
+            description={`Tem certeza que deseja excluir ${confirm.targetName}? Esta ação não pode ser desfeita.`}
+            confirmLabel="Excluir"
+            onClose={() => setConfirm({ open: false, targetId: null, targetName: '' })}
+            onConfirm={() => { deleteMutation.mutate(confirm.targetId); setConfirm({ open: false, targetId: null, targetName: '' }); }}
+            loading={deleteMutation.isLoading}
           />
         </div>
       )}
@@ -238,7 +269,20 @@ export default function ComunidadesPage() {
                 rows={5}
               />
             </div>
-
+            
+            <div className={styles.checkboxGroup}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.privada)}
+                  onChange={(e) => setForm((prev) => ({ ...prev, privada: e.target.checked }))}
+                />
+                Tornar comunidade privada
+              </label>
+              <p className={styles.helperText}>
+                Comunidades privadas exigem aprovação do admin para novos membros.
+              </p>
+            </div>
             <div className={styles.formActions}>
               <Button type="submit" loading={createMutation.isPending}>
                 Criar comunidade
@@ -270,28 +314,36 @@ export default function ComunidadesPage() {
       )}
 
       {activeTab !== 'criar' && !loading && activeList.length > 0 && (
-        <div className={styles.list}>
-          {activeList.map((comunidade) => {
-            const participating = isParticipando(
-              comunidade,
-              activeTab,
-              minhasIds
-            );
+        <div className={styles.gridWrap}>
+          <div className={styles.list}>
+            {activeList.map((comunidade) => {
+              const participating = isParticipando(
+                comunidade,
+                activeTab,
+                minhasIds
+              );
 
-            return (
-              <ComunidadeCard
-                key={getComunidadeId(comunidade)}
-                comunidade={comunidade}
-                actionLabel={participating ? 'Sair' : 'Entrar'}
-                actionLoading={
-                  joinMutation.isPending ||
-                  leaveMutation.isPending ||
-                  deleteMutation.isPending
-                }
-                onAction={() => handleAction(comunidade, participating)}
-              />
-            );
-          })}
+              return (
+                <ComunidadeCard
+                  key={getComunidadeId(comunidade)}
+                  comunidade={comunidade}
+                  actionLabel={participating ? 'Sair' : 'Entrar'}
+                  actionLoading={
+                    joinMutation.isPending ||
+                    leaveMutation.isPending ||
+                    deleteMutation.isPending
+                  }
+                  onAction={() => handleAction(comunidade, participating)}
+                />
+              );
+            })}
+          </div>
+
+          {buscarQuery.isLoading && (
+            <div className={styles.searchOverlay} aria-hidden>
+              <div className={styles.overlayContent}>Atualizando...</div>
+            </div>
+          )}
         </div>
       )}
     </div>

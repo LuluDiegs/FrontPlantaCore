@@ -1,17 +1,30 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../../../lib/axios';
+import { postService } from '../services/postService';
+import toast from 'react-hot-toast';
 
 export function useCreatePost(comunidadeId) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload) => {
-      const { data } = await api.post('/Post', payload);
-      return data;
+      return postService.create(payload);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comunidade-posts', comunidadeId] });
-      queryClient.invalidateQueries({ queryKey: ['feed'] });
+    onSuccess: (res, variables) => {
+      // Invalidate the specific community caches
+      if (comunidadeId || variables?.comunidadeId) {
+        const id = comunidadeId ?? variables.comunidadeId;
+        queryClient.invalidateQueries({ queryKey: ['comunidade-posts', id] });
+        queryClient.invalidateQueries({ queryKey: ['communityFeed', id] });
+        queryClient.invalidateQueries({ queryKey: ['comunidade', id] });
+      } else {
+        // fallback: invalidate generic community posts list
+        queryClient.invalidateQueries({ queryKey: ['comunidade-posts'] });
+      }
+
+      toast.success('Post publicado na comunidade');
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.mensagem || 'Erro ao publicar post na comunidade');
     },
   });
 }

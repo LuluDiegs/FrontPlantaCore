@@ -9,21 +9,73 @@
   gap: 8px;
 }
 
+.form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
 .input {
   flex: 1;
-  padding: 10px 14px;
+  padding: 14px;
   background: #f9fafb;
   border: 2px solid transparent;
-  border-radius: var(--radius-pill);
-  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-base);
   color: var(--color-text-dark);
   transition: border-color var(--transition), background var(--transition);
+  min-height: 56px;
+  max-height: 140px;
+  resize: vertical;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--color-medium);
   background: var(--color-white);
+}
+
+.replyBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replyInner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replyInput {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: #f9fafb;
+  border: 1px solid transparent;
+  min-height: 56px;
+  max-height: 120px;
+  resize: vertical;
+}
+
+.replyActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.replySend {
+  background: var(--color-forest);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.replyCancel {
+  background: transparent;
+  color: var(--color-text-light);
+  padding: 6px 12px;
+  border-radius: 8px;
 }
 
 .input::placeholder {

@@ -74,6 +74,56 @@
   border: 1px solid rgba(82, 183, 136, 0.12);
 }
 
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--color-soft);
+  border: 1px solid rgba(45, 106, 79, 0.06);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  min-width: 220px;
+}
+
+.gridWrap {
+  position: relative;
+}
+
+.searchOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+  border-radius: 8px;
+}
+
+.overlayContent {
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
 .loadingBox {
   min-height: 220px;
   display: grid;

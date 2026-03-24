@@ -1,8 +1,9 @@
 .actions {
   display: flex;
-  gap: 4px;
-  padding-top: 4px;
-  border-top: 1px solid rgba(82, 183, 136, 0.12);
+  gap: 8px;
+  padding-top: 8px;
+  border-top: none; /* moved to card separator */
+  align-items: center;
 }
 
 .btn {
@@ -16,6 +17,8 @@
   color: var(--color-text-light);
   transition: background var(--transition), color var(--transition), transform var(--transition);
 }
+
+.btn span { font-weight:700; }
 
 .btn:hover {
   background: var(--color-soft);
@@ -65,4 +68,14 @@
 
 .liked svg {
   animation: heartPop 0.35s ease both;
+}
+
+/* Estado salvo */
+.saved {
+  color: #0ea5a4;
+}
+
+.saved:hover {
+  color: #0ea5a4;
+  background: rgba(14,165,164,0.06);
 }

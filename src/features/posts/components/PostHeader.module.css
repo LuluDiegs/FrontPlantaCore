@@ -12,15 +12,15 @@
 
 .name {
   display: block;
-  font-size: 0.9375rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: var(--color-text-dark);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .time {
-  font-size: 0.75rem;
-  color: var(--color-text-light);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
 }
 
 .right {
@@ -36,7 +36,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-soft);
+  background: rgba(82,183,136,0.08);
   color: var(--color-forest);
   transition: background var(--transition);
 }

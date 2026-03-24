@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import { useComunidade } from '../hooks/useComunidade';
-import { ComunidadeList } from '../components/ComunidadeList';
+import React from 'react';
+import ComunidadeList from '../components/ComunidadeList';
+import { useMinhasComunidades, useJoinComunidade, useLeaveComunidade } from '../hooks/useComunidade';
 
 export function ComunidadeMinePage() {
-  const { comunidades, fetchMine, join, leave, loading, error } = useComunidade();
+  const minhasQuery = useMinhasComunidades();
+  const joinMutation = useJoinComunidade();
+  const leaveMutation = useLeaveComunidade();
 
-  useEffect(() => {
-    fetchMine();
-  }, []);
+  const comunidades = minhasQuery.data?.itens ?? minhasQuery.data ?? [];
 
   return (
     <div>
       <h2>Minhas Comunidades</h2>
-      {loading && <div>Carregando...</div>}
-      {error && <div>Erro: {error.message}</div>}
-      <ComunidadeList comunidades={comunidades} onJoin={join} onLeave={leave} />
+      {minhasQuery.isLoading && <div>Carregando...</div>}
+      {minhasQuery.isError && <div>Erro ao carregar suas comunidades</div>}
+      <ComunidadeList comunidades={comunidades} onJoin={(id) => joinMutation.mutate(id)} onLeave={(id) => leaveMutation.mutate(id)} />
     </div>
   );
 }

@@ -9,7 +9,8 @@ export const plantService = {
     // Backend expects PascalCase field names in multipart
     formData.append('Foto', file);
     if (comentario != null) formData.append('Comentario', comentario);
-    if (criarPostagem != null) formData.append('CriarPostagem', String(criarPostagem));
+    // Only send CriarPostagem when explicitly true to avoid string/boolean ambiguity
+    if (criarPostagem === true) formData.append('CriarPostagem', 'true');
 
     return api.post('/Planta/identificar', formData, {
       timeout: 60000,
@@ -24,10 +25,21 @@ export const plantService = {
     return api.post('/Planta/buscar/adicionar', data).then((r) => r.data);
   },
 
-  getMyPlants(pagina = 1, tamanho = 12) {
+  getMyPlants(pagina = 1, tamanho = 10) {
     return api.get('/Planta/minhas-plantas', {
       params: { pagina, tamanho },
-    }).then((r) => r.data);
+    })
+      .then((r) => {
+        // Debug: log full response so dev can inspect network payload
+        // Remove these logs after diagnosing why nothing is rendering
+          // debug logs removed
+        return r.data;
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error('[plantService.getMyPlants] error:', err);
+        throw err;
+      });
   },
 
   searchMyPlants(termo, pagina = 1, tamanho = 10) {

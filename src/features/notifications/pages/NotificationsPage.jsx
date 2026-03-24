@@ -17,9 +17,22 @@ export default function NotificationsPage() {
   const deleteNotification = useDeleteNotification();
   const deleteAll = useDeleteAllNotifications();
 
-  const notifications = data?.notifications || [];
+
+  let notifications = data?.notifications || [];
   const unreadCount = data?.unreadCount || 0;
-  const hasNotifications = notifications.length > 0;
+  let hasNotifications = notifications.length > 0;
+
+  // Se o contador for maior que zero mas a lista está vazia, mostra placeholders
+  if (!hasNotifications && unreadCount > 0) {
+    notifications = Array.from({ length: unreadCount }).map((_, i) => ({
+      id: `placeholder-${i}`,
+      tipo: 'LembreteCuidado',
+      mensagem: 'Notificação não lida',
+      lida: false,
+      dataCriacao: new Date().toISOString(),
+    }));
+    hasNotifications = true;
+  }
 
   return (
     <div className={styles.page}>

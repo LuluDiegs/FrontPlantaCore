@@ -166,6 +166,15 @@ export function useUserPosts(usuarioId) {
   });
 }
 
+export function useSavedPosts() {
+  return useInfiniteQuery({
+    queryKey: ['savedPosts'],
+    queryFn: ({ pageParam = 1 }) => usuarioService.getSavedPosts(pageParam),
+    getNextPageParam: (lastPage, all) => (lastPage?.temProxima ? all.length + 1 : undefined),
+    select: (data) => data.pages.flatMap((p) => p.dados?.itens || p.dados || []),
+  });
+}
+
 // Reactivation helpers
 export function useRequestReactivate() {
   return useMutation({ mutationFn: (email) => usuarioService.requestReactivate(email) });

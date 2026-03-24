@@ -1,14 +1,15 @@
 import React from 'react';
-import { useComunidade } from '../hooks/useComunidade';
 import { ComunidadeForm } from '../components/ComunidadeForm';
+import { useCreateComunidade } from '../hooks/useComunidade';
+import { useNavigate } from 'react-router-dom';
 
 export function ComunidadeCreatePage() {
-  const { create } = useComunidade();
+  const createMutation = useCreateComunidade();
+  const navigate = useNavigate();
 
   const handleSubmit = async (data) => {
-    await create(data);
-    alert('Comunidade criada com sucesso!');
-    // Redirecionar ou atualizar lista
+    await createMutation.mutateAsync(data);
+    navigate('/comunidades');
   };
 
   return (

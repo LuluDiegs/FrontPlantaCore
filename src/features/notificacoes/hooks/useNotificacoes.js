@@ -1,3 +1,7 @@
+// Hook para configurações de notificações
+export function useConfiguracoesNotificacoes() {
+  return useQuery(['notificacoes-configuracoes'], () => notificacaoService.configuracoes());
+}
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notificacaoService } from '../services/notificacaoService';
 import { toast } from 'react-hot-toast';

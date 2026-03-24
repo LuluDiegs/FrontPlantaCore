@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Send, Trash2, Heart } from 'lucide-react';
-import { useComments, useCreateComment, useDeleteComment, useToggleCommentLike } from '../hooks/usePosts';
+import { useComments, useCreateComment, useDeleteComment, useToggleCommentLike, useReplyComment } from '../hooks/usePosts';
 import { useAuthStore } from '../../auth/stores/authStore';
 import Avatar from '../../../shared/components/ui/Avatar';
 import Spinner from '../../../shared/components/ui/Spinner';
@@ -10,6 +10,7 @@ import styles from './PostComments.module.css';
 
 export default function PostComments({ postId }) {
   const [text, setText] = useState('');
+  const [replyTo, setReplyTo] = useState(null);
   const currentUserId = useAuthStore((s) => s.user?.id);
 
   const { data: comments, isLoading } = useComments(postId);
@@ -27,15 +28,25 @@ export default function PostComments({ postId }) {
     );
   };
 
+  const replyMutation = useReplyComment();
+
+  const handleReply = (comentarioId, conteudo) => {
+    if (!conteudo?.trim()) return;
+    replyMutation.mutate({ comentarioId, conteudo, postId }, {
+      onSuccess: () => setReplyTo(null),
+    });
+  };
+
   return (
     <div className={styles.section}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <input
+        <textarea
           className={styles.input}
-          placeholder="Escreva um comentário..."
+          placeholder="Escreva um comentário... (Pressione Enter para enviar ou Ctrl+Enter para nova linha)"
           value={text}
           onChange={(e) => setText(e.target.value)}
           maxLength={1000}
+          rows={3}
         />
         <button
           type="submit"
@@ -86,10 +97,54 @@ export default function PostComments({ postId }) {
                     Excluir
                   </button>
                 )}
+                <button
+                  className={styles.replyBtn}
+                  onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)}
+                >Responder</button>
               </div>
             </div>
           </div>
         ))}
+      </div>
+      {replyTo && (
+        <div className={styles.replyBox}>
+          <ReplyBox
+            key={replyTo}
+            comentarioId={replyTo}
+            onCancel={() => setReplyTo(null)}
+            onSend={(conteudo) => handleReply(replyTo, conteudo)}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReplyBox({ comentarioId, onCancel, onSend }) {
+  const [val, setVal] = useState('');
+
+  return (
+    <div className={styles.replyInner}>
+      <textarea
+        className={styles.replyInput}
+        placeholder="Escreva sua resposta... (Ctrl+Enter para nova linha)"
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        rows={3}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            const content = val.trim();
+            if (!content) return;
+            onSend(content);
+            setVal('');
+          }
+        }}
+        maxLength={1000}
+      />
+      <div className={styles.replyActions}>
+        <button className={styles.replySend} onClick={() => { const c = val.trim(); if (c) { onSend(c); setVal(''); } }}>Enviar</button>
+        <button className={styles.replyCancel} onClick={onCancel}>Cancelar</button>
       </div>
     </div>
   );

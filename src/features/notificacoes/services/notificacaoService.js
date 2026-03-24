@@ -24,6 +24,9 @@ export const notificacaoService = {
   removeAll() {
     return api.delete('/Notificacao').then((r) => r.data);
   },
+  configuracoes() {
+    return api.get('/Notificacao/configuracoes').then((r) => r.data);
+  },
 };
 
 export default notificacaoService;

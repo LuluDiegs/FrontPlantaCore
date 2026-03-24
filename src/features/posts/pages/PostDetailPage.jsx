@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { usePostDetail, useDeletePost } from '../hooks/usePosts';
+import { postService } from '../services/postService';
+import { useEffect } from 'react';
 import PostCard from '../components/PostCard';
 import PostComments from '../components/PostComments';
 import Spinner from '../../../shared/components/ui/Spinner';
@@ -12,6 +14,12 @@ export default function PostDetailPage() {
   const navigate = useNavigate();
   const { data: post, isLoading } = usePostDetail(postId);
   const deletePost = useDeletePost();
+
+  useEffect(() => {
+    if (!postId) return;
+    // Notify backend that the post was viewed (best-effort)
+    postService.view(postId).catch(() => {});
+  }, [postId]);
 
   const handleDelete = (id) => {
     deletePost.mutate(id, {
