@@ -1,0 +1,137 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(82, 183, 136, 0.18);
+  box-shadow: 0 2px 20px rgba(45, 106, 79, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  animation: fadeIn 0.4s ease both;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+      var(--color-forest-dark) 0%,
+      var(--color-forest) 30%,
+      var(--color-medium) 60%,
+      var(--color-light) 100%);
+  opacity: 0.55;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-forest);
+  transition: transform var(--transition), color var(--transition);
+}
+
+.logo:hover {
+  transform: scale(1.04);
+  color: var(--color-forest-dark);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--color-text-mid);
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.iconBtn:hover {
+  background: var(--color-soft);
+  color: var(--color-forest);
+  transform: scale(1.12);
+}
+
+.userChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: var(--gradient-soft);
+  border: 1.5px solid rgba(82, 183, 136, 0.22);
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-forest);
+  transition: all var(--transition);
+}
+
+.userChip:hover {
+  background: var(--color-soft);
+  box-shadow: 0 3px 14px var(--color-shadow);
+  transform: translateY(-1px);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(82, 183, 136, 0.3);
+}
+
+.avatarFallback {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0 12px;
+  }
+
+  .nav {
+    gap: 6px;
+  }
+
+  .userChip {
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .userChip span {
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,103 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(82, 183, 136, 0.1);
+  cursor: pointer;
+  transition: background var(--transition);
+  position: relative;
+}
+
+.item:hover {
+  background: var(--color-mist);
+}
+
+.item:hover .deleteBtn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.unread {
+  background: rgba(216, 243, 220, 0.45);
+}
+
+.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gradient-medium);
+  border-radius: 0 2px 2px 0;
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.content p {
+  font-size: 0.9rem;
+  color: var(--color-text-dark);
+  line-height: 1.4;
+}
+
+.content strong {
+  font-weight: 700;
+}
+
+.time {
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  margin-top: 3px;
+  display: block;
+  font-weight: 500;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%) scale(0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--color-text-light);
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.deleteBtn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+@media (max-width: 480px) {
+  .deleteBtn {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}

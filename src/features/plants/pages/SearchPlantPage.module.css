@@ -1,0 +1,145 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+  margin-top: -12px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.searchForm > div:first-child {
+  flex: 1;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resultCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: var(--color-white);
+  border: 1px solid var(--color-soft);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition);
+}
+
+.resultCard:hover {
+  border-color: var(--color-light);
+}
+
+.resultImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-soft);
+}
+
+.resultImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  color: var(--color-text-light);
+}
+
+.resultInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultInfo h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scientific {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+  font-style: italic;
+}
+
+.family {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.pageBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--color-text-mid);
+  transition: background var(--transition), color var(--transition);
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--color-soft);
+  color: var(--color-forest);
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .resultCard {
+    flex-wrap: wrap;
+  }
+
+  .resultCard > button {
+    width: 100%;
+  }
+}

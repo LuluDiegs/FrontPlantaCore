@@ -1,0 +1,129 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.forgotLink {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: -8px;
+}
+
+.forgotLink a,
+.linkBtn {
+  font-size: 0.8125rem;
+  color: var(--color-forest);
+  font-weight: 600;
+}
+
+.forgotLink a:hover,
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+}
+
+.footer a {
+  color: var(--color-forest);
+  font-weight: 700;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.successBox {
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.successIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-soft);
+  color: var(--color-forest);
+  margin: 0 auto 16px;
+}
+
+.successBox h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 8px;
+}
+
+.successBox p {
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.errorBox {
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.errorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+  margin: 0 auto 16px;
+}
+
+.errorBox h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 8px;
+}
+
+.errorBox p {
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.passwordHints {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: -8px;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.hintValid {
+  color: var(--color-forest);
+}

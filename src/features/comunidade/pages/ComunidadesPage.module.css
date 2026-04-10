@@ -1,0 +1,225 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(27, 67, 50, 0.98) 0%, rgba(45, 106, 79, 0.95) 52%, rgba(82, 183, 136, 0.9) 100%);
+  color: var(--color-white);
+  box-shadow: 0 18px 36px rgba(27, 67, 50, 0.2);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.hero p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.heroStats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.statCard {
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.statCard strong {
+  display: block;
+  font-size: 1.15rem;
+}
+
+.statCard span {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.searchBox {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 14px;
+  border-radius: 22px;
+  border: 1px solid rgba(82, 183, 136, 0.12);
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--color-soft);
+  border: 1px solid rgba(45, 106, 79, 0.06);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  min-width: 220px;
+}
+
+.gridWrap {
+  position: relative;
+}
+
+.searchOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+  border-radius: 8px;
+}
+
+.overlayContent {
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.loadingBox {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.createCard {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(82, 183, 136, 0.14);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 14px 34px rgba(45, 106, 79, 0.08);
+}
+
+.createHeader {
+  margin-bottom: 18px;
+}
+
+.createHeader h2 {
+  margin-bottom: 6px;
+}
+
+.createHeader p {
+  color: var(--color-text-mid);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.textareaGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.textareaGroup label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-mid);
+}
+
+.textareaGroup textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 2px solid rgba(82, 183, 136, 0.15);
+  background: var(--color-mist);
+  color: var(--color-text-dark);
+  outline: none;
+  resize: vertical;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.textareaGroup textarea:focus {
+  border-color: var(--color-medium);
+  background: var(--color-white);
+  box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.1);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .heroStats {
+    width: 100%;
+  }
+
+  .statCard {
+    flex: 1;
+  }
+
+  .list {
+    grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    justify-content: stretch;
+  }
+
+  .formActions :global(button) {
+    width: 100%;
+  }
+}

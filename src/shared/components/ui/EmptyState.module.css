@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 56px 24px;
+  gap: 14px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--gradient-soft);
+  color: var(--color-forest);
+  margin-bottom: 4px;
+  border: 1.5px solid rgba(82, 183, 136, 0.2);
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.description {
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+.action {
+  margin-top: 8px;
+}

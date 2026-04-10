@@ -1,0 +1,232 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #2f6b52;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.heroCard,
+.createPostCard,
+.postsCard {
+  background: #f8fbf8;
+  border: 1px solid #d9ebe0;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(45, 90, 61, 0.08);
+}
+
+.heroCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.heroContent h1 {
+  margin: 10px 0 8px;
+  font-size: 2rem;
+  color: #163828;
+}
+
+.heroContent p {
+  margin: 0;
+  color: #4d6b5b;
+  line-height: 1.6;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #dff1e6;
+  color: #2f6b52;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #355846;
+  font-weight: 500;
+}
+
+.sectionHeader h2 {
+  margin: 0 0 6px;
+  color: #163828;
+}
+
+.sectionHeader p {
+  margin: 0;
+  color: #5d7b69;
+}
+
+/* Tabs */
+.tabHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tabButton {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  border-radius: 12px;
+  color: #356a53;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabButton:hover {
+  background: rgba(86, 184, 134, 0.06);
+}
+
+.active {
+  background: #e7f8ee;
+  border-color: #cfeedf;
+}
+
+.postForm {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.postForm textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid #cfe3d7;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: #fff;
+  resize: vertical;
+  outline: none;
+  font-size: 15px;
+  color: #163828;
+}
+
+.postForm textarea:focus {
+  border-color: #56b886;
+  box-shadow: 0 0 0 3px rgba(86, 184, 134, 0.12);
+}
+
+/* Admin area styles */
+.adminSection {
+  background: #f7fbf6;
+  border: 1px solid #e2f1e8;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.adminColumn {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.adminControls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.adminActions {
+  display: flex;
+  gap: 8px;
+}
+
+.postFormActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.postsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.postItem {
+  background: #ffffff;
+  border: 1px solid #e1eee6;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.postHeader strong {
+  display: block;
+  color: #163828;
+}
+
+.postHeader span {
+  font-size: 13px;
+  color: #6f8a7a;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2f6b52, #5dbb8a);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.postContent {
+  margin: 0;
+  color: #284636;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.loadingBox {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+@media (max-width: 768px) {
+  .heroCard {
+    flex-direction: column;
+  }
+
+  .postFormActions {
+    justify-content: stretch;
+  }
+
+  .postFormActions button {
+    width: 100%;
+  }
+}

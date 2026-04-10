@@ -1,0 +1,30 @@
+.banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.detail {
+  font-size: 0.8125rem;
+  color: #991b1b;
+  line-height: 1.5;
+  padding-left: 24px;
+}

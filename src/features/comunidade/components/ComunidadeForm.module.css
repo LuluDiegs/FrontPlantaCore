@@ -1,0 +1,105 @@
+.privacyCard {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(216,243,220,0.3) 0%, rgba(149,213,178,0.08) 100%);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(45,106,79,0.10), 0 2px 8px rgba(0,0,0,0.04);
+  border: 2px solid var(--color-soft);
+  padding: 22px 22px 22px 18px;
+  gap: 22px;
+  min-height: 80px;
+  cursor: pointer;
+  transition: border 0.2s;
+  position: relative;
+  max-width: 520px;
+  margin-bottom: 8px;
+}
+
+.privacyCardActive {
+  border: 2px solid var(--color-cta);
+  box-shadow: 0 8px 32px rgba(82,183,136,0.13), 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.privacyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-cta);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  box-shadow: 0 2px 12px rgba(82,183,136,0.13);
+  flex-shrink: 0;
+}
+
+.privacyText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.privacyTitle {
+  font-weight: 900;
+  color: var(--color-forest);
+  font-size: 1.13rem;
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
+}
+
+.privacyDesc {
+  font-size: 1.01rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.privacyCheckbox {
+  accent-color: var(--color-cta);
+  width: 28px;
+  height: 28px;
+  margin-left: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(82,183,136,0.13);
+  transition: box-shadow 0.2s;
+}
+.form {
+  background: var(--color-white);
+  border: 1px solid rgba(82, 183, 136, 0.08);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.input, .textarea {
+  border: 1px solid var(--color-soft);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  background: var(--color-bg-light);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

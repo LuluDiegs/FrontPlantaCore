@@ -1,0 +1,33 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 10, 10, 0.4);
+  z-index: 1000;
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 12px 36px rgba(8, 50, 30, 0.12);
+}
+
+.title {
+  margin: 0 0 8px 0;
+  color: var(--color-text-dark);
+}
+
+.desc {
+  margin: 0 0 16px 0;
+  color: var(--color-text-mid);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
