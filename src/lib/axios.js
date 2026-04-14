@@ -240,8 +240,10 @@ api.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
       // eslint-disable-next-line no-console
-      console.error('[axios] refresh failed:', refreshError);
-
+console.error(
+  '[axios] response body:',
+  JSON.stringify(error.response?.data, null, 2)
+);
       // Limpa auth e redireciona para login
       localStorage.removeItem('plantid-auth');
       window.location.href = '/login';

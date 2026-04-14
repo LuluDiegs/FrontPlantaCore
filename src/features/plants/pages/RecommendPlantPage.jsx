@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -42,9 +42,9 @@ const STEPS = [
     subtitle: 'Vamos indicar uma planta que combine com seu ritmo.',
     icon: Droplets,
     options: [
-      { value: 'rega-frequente', label: 'Rego com frequência' },
-      { value: 'rego-as-vezes', label: 'Rego às vezes' },
-      { value: 'quase-nao-rega', label: 'Quase não rego' },
+      { value: 'frequente', label: 'Rego com frequência' },
+      { value: 'pouca', label: 'Rego às vezes' },
+      { value: 'raramente', label: 'Quase não rego' },
     ],
   },
   {
@@ -53,10 +53,10 @@ const STEPS = [
     subtitle: 'Isso ajuda a evitar plantas inadequadas para pets ou crianças.',
     icon: Shield,
     options: [
-      { value: 'sem-restricoes', label: 'Sem restrições' },
-      { value: 'tenho-pets', label: 'Tenho pets' },
-      { value: 'tenho-criancas', label: 'Tenho crianças' },
-      { value: 'tenho-pets-e-criancas', label: 'Tenho pets e crianças' },
+      { value: 'sem restricoes', label: 'Sem restrições' },
+      { value: 'pets', label: 'Tenho pets' },
+      { value: 'criancas', label: 'Tenho crianças' },
+      { value: 'pets e criancas', label: 'Tenho pets e crianças' },
     ],
   },
   {
@@ -68,18 +68,125 @@ const STEPS = [
       { value: 'estetica', label: 'Estética' },
       { value: 'aromatica', label: 'Aromática' },
       { value: 'medicinal', label: 'Medicinal' },
-      { value: 'purificar-ambiente', label: 'Purificar o ambiente' },
+      { value: 'purificacao', label: 'Purificar o ambiente' },
     ],
   },
 ];
 
-function getResultData(raw) {
-  const data = raw?.dados?.dados || raw?.dados || raw?.data?.dados?.dados || raw?.data?.dados || raw;
-  return {
-    nomeComum: data?.nomeComum || data?.NomeComum || '',
-    urlImagem: data?.urlImagem || data?.UrlImagem || '',
-    justificativa: data?.justificativa || data?.Justificativa || '',
-  };
+function extractResult(raw) {
+  const visited = new Set();
+
+  function normalizeUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    const trimmed = url.trim();
+
+    if (!trimmed) return '';
+    if (trimmed.startsWith('//')) return `https:${trimmed}`;
+    return trimmed;
+  }
+
+  function looksLikeImageUrl(value) {
+    if (typeof value !== 'string') return false;
+    const v = value.toLowerCase().trim();
+
+    return (
+      v.startsWith('http') &&
+      (
+        v.includes('.jpg') ||
+        v.includes('.jpeg') ||
+        v.includes('.png') ||
+        v.includes('.webp') ||
+        v.includes('.gif') ||
+        v.includes('image') ||
+        v.includes('img')
+      )
+    );
+  }
+
+  function findInObject(value) {
+    if (!value || typeof value !== 'object') return null;
+    if (visited.has(value)) return null;
+    visited.add(value);
+
+    const nomeComum =
+      value.nomeComum ??
+      value.NomeComum ??
+      value.nome ??
+      value.Nome ??
+      value.nomePlanta ??
+      value.nome_planta ??
+      value.common_name ??
+      '';
+
+    let urlImagem =
+      value.urlImagem ??
+      value.UrlImagem ??
+      value.imagem ??
+      value.Imagem ??
+      value.imageUrl ??
+      value.image_url ??
+      value.imagemUrl ??
+      value.ImagemUrl ??
+      value.urlFoto ??
+      value.UrlFoto ??
+      value.foto ??
+      value.Foto ??
+      value.photo ??
+      value.thumbnail ??
+      value.thumbnailUrl ??
+      value.default_image?.medium_url ??
+      value.default_image?.original_url ??
+      value.default_image?.regular_url ??
+      value.default_image?.small_url ??
+      '';
+
+    const justificativa =
+      value.justificativa ??
+      value.Justificativa ??
+      value.descricao ??
+      value.Descricao ??
+      value.motivo ??
+      value.Motivo ??
+      value.texto ??
+      value.Texto ??
+      value.reason ??
+      '';
+
+    urlImagem = normalizeUrl(urlImagem);
+
+    if (!urlImagem) {
+      for (const key of Object.keys(value)) {
+        const current = value[key];
+        if (looksLikeImageUrl(current)) {
+          urlImagem = normalizeUrl(current);
+          break;
+        }
+      }
+    }
+
+    if (nomeComum || urlImagem || justificativa) {
+      return {
+        nomeComum: String(nomeComum || ''),
+        urlImagem: String(urlImagem || ''),
+        justificativa: String(justificativa || ''),
+      };
+    }
+
+    for (const key of Object.keys(value)) {
+      const found = findInObject(value[key]);
+      if (found) return found;
+    }
+
+    return null;
+  }
+
+  return (
+    findInObject(raw) || {
+      nomeComum: '',
+      urlImagem: '',
+      justificativa: '',
+    }
+  );
 }
 
 export default function RecommendPlantPage() {
@@ -87,6 +194,9 @@ export default function RecommendPlantPage() {
 
   const [step, setStep] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [isSubmittingRecommendation, setIsSubmittingRecommendation] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const [form, setForm] = useState({
     experiencia: '',
     iluminacao: '',
@@ -99,17 +209,24 @@ export default function RecommendPlantPage() {
   const currentStep = step > 0 ? STEPS[step - 1] : null;
   const currentValue = currentStep ? form[currentStep.field] : '';
 
-  const result = getResultData(recommend.data);
+  const result = useMemo(() => extractResult(recommend.data), [recommend.data]);
 
-  const summary = [
-    form.experiencia,
-    form.iluminacao,
-    form.regagem,
-    form.seguranca,
-    form.proposito,
-  ]
-    .filter(Boolean)
-    .join(' • ');
+  const summary = useMemo(() => {
+    const labels = [
+      STEPS[0].options.find((item) => item.value === form.experiencia)?.label,
+      STEPS[1].options.find((item) => item.value === form.iluminacao)?.label,
+      STEPS[2].options.find((item) => item.value === form.regagem)?.label,
+      STEPS[3].options.find((item) => item.value === form.seguranca)?.label,
+      STEPS[4].options.find((item) => item.value === form.proposito)?.label,
+    ].filter(Boolean);
+
+    return labels.join(' • ');
+  }, [form]);
+
+  const hasRecommendation =
+    !!result.nomeComum || !!result.urlImagem || !!result.justificativa;
+
+  const isLoadingResult = isSubmittingRecommendation || recommend.isPending;
 
   function updateField(field, value) {
     setForm((prev) => ({
@@ -155,13 +272,28 @@ export default function RecommendPlantPage() {
       return;
     }
 
+    setImageError(false);
     setShowResult(true);
-    recommend.mutate(form);
+    setIsSubmittingRecommendation(true);
+
+    recommend.mutate(form, {
+      onSuccess: (data) => {
+        console.log('RESPOSTA BRUTA DA API:', data);
+      },
+      onError: (error) => {
+        console.error('ERRO NA RECOMENDAÇÃO:', error?.response?.data || error);
+      },
+      onSettled: () => {
+        setIsSubmittingRecommendation(false);
+      },
+    });
   }
 
   function handleRestart() {
     setStep(0);
     setShowResult(false);
+    setIsSubmittingRecommendation(false);
+    setImageError(false);
     setForm({
       experiencia: '',
       iluminacao: '',
@@ -190,10 +322,13 @@ export default function RecommendPlantPage() {
               <span>Recomendação inteligente</span>
             </div>
 
-          <h1>Descubra a planta ideal para o seu espaço</h1>
-              <p>
-        Responda algumas perguntas rápidas e descubra uma planta que combine com seu espaço, sua rotina e o que você busca no dia a dia.
-      </p>
+            <h1>Descubra a planta ideal para o seu espaço</h1>
+
+            <p>
+              Responda algumas perguntas rápidas e descubra uma planta que combine
+              com seu espaço, sua rotina e o que você busca no dia a dia.
+            </p>
+
             <button
               type="button"
               className={styles.primaryButton}
@@ -206,10 +341,12 @@ export default function RecommendPlantPage() {
 
         {step > 0 && !showResult && currentStep && (
           <section className={styles.quizCard}>
-           <div className={styles.progressRow}>
-           <span>Etapa {step} de {totalSteps}</span>
-          <span>{Math.round((step / totalSteps) * 100)}%</span>
-          </div>
+            <div className={styles.progressRow}>
+              <span>
+                Etapa {step} de {totalSteps}
+              </span>
+              <span>{Math.round((step / totalSteps) * 100)}%</span>
+            </div>
 
             <div className={styles.progressBar}>
               <div
@@ -270,9 +407,11 @@ export default function RecommendPlantPage() {
                   type="button"
                   className={styles.primaryButton}
                   onClick={handleSubmit}
-                  disabled={!currentValue || recommend.isPending}
+                  disabled={!currentValue || isLoadingResult}
                 >
-                  {recommend.isPending ? 'Buscando...' : 'Finalizar e ver recomendação'}
+                  {isLoadingResult
+                    ? 'Buscando...'
+                    : 'Finalizar e ver recomendação'}
                 </button>
               )}
             </div>
@@ -283,23 +422,39 @@ export default function RecommendPlantPage() {
           <section className={styles.resultCard}>
             <div className={styles.resultTop}>
               <span className={styles.eyebrow}>Sua seleção</span>
-              <h2>Prontinho, aqui está sua recomendação</h2>
-              <p>{summary}</p>
+              <h2>
+                {isLoadingResult
+                  ? 'Estamos preparando sua recomendação'
+                  : hasRecommendation
+                  ? 'Prontinho, aqui está sua recomendação'
+                  : 'Não conseguimos concluir sua recomendação'}
+              </h2>
+              <p>
+                {isLoadingResult
+                  ? summary
+                  : hasRecommendation
+                  ? summary
+                  : 'Suas respostas foram recebidas, mas a recomendação não pôde ser carregada agora.'}
+              </p>
             </div>
 
-            {recommend.isPending ? (
+            {isLoadingResult ? (
               <div className={styles.loadingBox}>
                 <div className={styles.loadingEmoji}>🌿</div>
                 <h3>Buscando a melhor opção...</h3>
                 <p>Estamos analisando suas respostas.</p>
               </div>
-            ) : result.nomeComum ? (
+            ) : hasRecommendation ? (
               <div className={styles.resultContent}>
-                {result.urlImagem ? (
+                {result.urlImagem && !imageError ? (
                   <img
                     src={result.urlImagem}
-                    alt={result.nomeComum}
+                    alt={result.nomeComum || 'Planta recomendada'}
                     className={styles.resultImage}
+                    onError={() => {
+                      console.log('URL da imagem falhou:', result.urlImagem);
+                      setImageError(true);
+                    }}
                   />
                 ) : (
                   <div className={styles.imageFallback}>🪴</div>
@@ -307,15 +462,17 @@ export default function RecommendPlantPage() {
 
                 <div className={styles.resultText}>
                   <span className={styles.resultLabel}>Planta recomendada</span>
-                  <h3>{result.nomeComum}</h3>
-                  <p>{result.justificativa}</p>
+                  <h3>{result.nomeComum || 'Planta recomendada'}</h3>
+                  <p>
+                    {result.justificativa || 'Sem descrição disponível no momento.'}
+                  </p>
                 </div>
               </div>
             ) : (
               <div className={styles.loadingBox}>
                 <div className={styles.loadingEmoji}>🌱</div>
-                <h3>Não foi possível carregar a recomendação agora</h3>
-                <p>Tente novamente daqui a pouco.</p>
+                <h3>Não conseguimos carregar sua recomendação</h3>
+                <p>Tente novamente em instantes.</p>
               </div>
             )}
 

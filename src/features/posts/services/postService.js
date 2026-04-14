@@ -1,50 +1,28 @@
 import api from '../../../lib/axios';
 
 export const postService = {
-  create(data) {
-    return api.post('/Post', data, { headers: { 'X-Skip-PascalCase': true } }).then((r) => ({ status: r.status, data: r.data }));
-  },
+ create(data) {
+    const { conteudo, plantaId, comunidadeId, hashtags, categorias, palavrasChave } = data  {};
 
-  update(postId, conteudo) {
-    return api.put(`/Post/${postId}`, { conteudo }).then((r) => r.data);
-  },
+    const normalizeArray = (arr) => {
+      if (!arr) return null;
+      if (!Array.isArray(arr)) return null;
+      const cleaned = arr
+        .map((v) => (typeof v === 'string' ? v.trim() : v))
+        .filter((v) => v !== null && v !== undefined && v !== '');
+      return cleaned.length ? cleaned : null;
+    };
 
-  delete(postId) {
-    return api.delete(`/Post/${postId}`).then((r) => r.data);
-  },
+    const payload = {
+      conteudo: (typeof conteudo === 'string' ? conteudo.trim() : '')  '',
+      plantaId: plantaId  null,
+      comunidadeId: comunidadeId  null,
+      hashtags: normalizeArray(hashtags),
+      categorias: normalizeArray(categorias),
+      palavrasChave: normalizeArray(palavrasChave),
+    };
 
-  getById(postId) {
-    return api.get(`/Post/${postId}`).then((r) => r.data);
-  },
-
-  getFeed(pagina = 1, tamanho = 10, ordenarPor) {
-    const params = { pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get('/Post/feed', { params }).then((r) => r.data);
-  },
-
-  getExplore(pagina = 1, tamanho = 10, ordenarPor) {
-    const params = { pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get('/Post/explorar', { params }).then((r) => r.data);
-  },
-
-  getByUser(usuarioId, pagina = 1, tamanho = 10, ordenarPor) {
-    const params = { pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get(`/Post/usuario/${usuarioId}`, { params }).then((r) => r.data);
-  },
-
-  getByCommunity(comunidadeId, pagina = 1, tamanho = 10, ordenarPor) {
-    const params = { pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api
-      .get(`/Post/comunidade/${comunidadeId}`, { params })
-      .then((r) => r.data);
-  },
-
-  getLikedByUser(usuarioId) {
-    return api.get(`/Post/usuario/${usuarioId}/curtidos`).then((r) => r.data);
+    return api.post('/Post', payload, { headers: { 'X-Skip-PascalCase': true } }).then((r) => ({ status: r.status, data: r.data }));
   },
 
   searchByHashtag(hashtag, pagina = 1, tamanho = 20, ordenarPor) {
