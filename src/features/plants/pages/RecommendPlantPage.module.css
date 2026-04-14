@@ -1,0 +1,355 @@
+.page {
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  padding: 28px 32px 40px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.container {
+  width: min(100%, 980px);
+  margin: 0 auto;
+}
+
+.startCard,
+.quizCard,
+.resultCard {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #dce8de;
+  border-radius: 30px;
+  box-shadow: 0 24px 60px rgba(34, 74, 48, 0.08);
+}
+
+.startCard {
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #eef6ef;
+  color: #3f7a4d;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.startCard h1 {
+  max-width: 720px;
+  margin: 22px 0 18px;
+  color: #173323;
+  font-size: 3.2rem;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.startCard p {
+  max-width: 620px;
+  margin: 0;
+  color: #667c6b;
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+.startCard .primaryButton {
+  margin-top: 32px;
+}
+
+.quizCard,
+.resultCard {
+  padding: 34px 36px 32px;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  color: #5e7665;
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+.progressBar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #e5eee6;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #79bf7c 0%, #3f7a4d 100%);
+  transition: width 0.28s ease;
+}
+
+.questionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.iconBox {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #eef6ef 0%, #e8f2ea 100%);
+  color: #3f7a4d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #6dad70;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.questionHeader h2,
+.resultTop h2 {
+  margin: 0 0 8px;
+  color: #173323;
+  font-size: 2.2rem;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.questionHeader p,
+.resultTop p,
+.resultText p,
+.loadingBox p {
+  margin: 0;
+  color: #667c6b;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.options {
+  display: grid;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.optionButton {
+  width: 100%;
+  display: block;
+  padding: 20px 22px;
+  border-radius: 20px;
+  border: 1px solid #d6e2d8;
+  background: #fbfdfb;
+  color: #1f3d28;
+  font-size: 1.02rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.optionButton:hover {
+  transform: translateY(-1px);
+  border-color: #a5c7ab;
+  box-shadow: 0 8px 18px rgba(63, 122, 77, 0.07);
+}
+
+.optionButtonActive {
+  background: linear-gradient(180deg, #f1faf2 0%, #e6f4e8 100%);
+  border-color: #6caf6f;
+  box-shadow:
+    0 0 0 3px rgba(108, 175, 111, 0.12),
+    0 10px 22px rgba(63, 122, 77, 0.08);
+}
+
+.navigation,
+.resultActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-width: 156px;
+  border: none;
+  border-radius: 18px;
+  padding: 15px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #4f8f5b 0%, #3b7249 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(59, 114, 73, 0.16);
+}
+
+.primaryButton:hover:not(:disabled),
+.secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondaryButton {
+  background: #eef4ef;
+  color: #24412c;
+}
+
+.resultTop {
+  margin-bottom: 22px;
+}
+
+.resultContent {
+  display: grid;
+  gap: 20px;
+}
+
+.resultImage,
+.imageFallback {
+  width: 100%;
+  border-radius: 24px;
+  border: 1px dashed #ceddce;
+  background: #f8fbf8;
+}
+
+.resultImage {
+  display: block;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+.imageFallback {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.resultLabel {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #5ea85f;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.resultText h3,
+.loadingBox h3 {
+  margin: 0 0 10px;
+  color: #173323;
+  font-size: 1.8rem;
+  line-height: 1.14;
+}
+
+.loadingBox {
+  min-height: 300px;
+  border-radius: 24px;
+  border: 1px dashed #d6e2d8;
+  background: #f8fbf8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px;
+}
+
+.loadingEmoji {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 22px 18px 28px;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .startCard {
+  padding: 40px 24px;
+}
+  .quizCard,
+  .resultCard {
+    padding: 24px 20px;
+  }
+
+  .startCard h1 {
+  font-size: 2.3rem;
+}
+
+  .questionHeader h2,
+  .resultTop h2 {
+    font-size: 1.7rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .questionHeader {
+    flex-direction: column;
+  }
+
+  .navigation,
+  .resultActions {
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .startCard h1 {
+  font-size: 2rem;
+}
+
+  .optionButton {
+    padding: 18px;
+    border-radius: 18px;
+  }
+}

@@ -59,4 +59,18 @@ export const plantService = {
   generateCareReminder(plantaId) {
     return api.post(`/Planta/${plantaId}/gerar-lembrete-cuidado`).then((r) => r.data);
   },
+
+
+  recommend(data) {
+    const formData = new FormData();
+    formData.append('Experiencia', data.experiencia);
+    formData.append('Iluminacao', data.iluminacao);
+    formData.append('Regagem', data.regagem);
+    formData.append('Seguranca', data.seguranca);
+    formData.append('Proposito', data.proposito);
+
+    return api.post('/Planta/recomendacao', formData, {
+      timeout: 60000,
+    }).then((r) => r.data);
+  },
 };
