@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { plantService } from '../services/plantService';
 
+function unwrapRecommendationResponse(data) {
+  // Backend returns wrapper {sucesso, dados: {sucesso, dados, mensagem}}
+  if (!data) return null;
+  if (data?.dados?.dados?.nomeComum) return data.dados.dados;
+  if (data?.dados?.nomeComum) return data.dados;
+  if (data?.nomeComum) return data;
+  return null;
+}
+
 function displayServerMessageAsToast(data, fallbackMessage, fallbackIsError = false) {
   const msg = data?.mensagem || null;
   if (!msg) {
@@ -176,6 +185,29 @@ export function useGenerateCareReminder() {
     onError: () => {
       // Endpoint não implementado - mostrar mensagem informativa
       toast.success('💡 Lembretes são gerados automaticamente todos os dias');
+    },
+  });
+}
+
+
+export function useRecommendPlant() {
+  return useMutation({
+    mutationFn: (payload) => plantService.recommend(payload),
+    onSuccess: (data) => {
+      const recommendation = unwrapRecommendationResponse(data);
+      const serverMessage = data?.dados?.mensagem || data?.mensagem || null;
+
+      if (recommendation?.nomeComum) {
+        toast.success(serverMessage || 'Recomendação gerada!');
+      } else {
+        displayServerMessageAsToast(data?.dados || data, 'Não foi possível gerar recomendação');
+      }
+    },
+    onError: (err) => {
+      const msg = err.response?.data?.dados?.mensagem
+        || err.response?.data?.mensagem
+        || 'Erro ao gerar recomendação';
+      toast.error(msg);
     },
   });
 }

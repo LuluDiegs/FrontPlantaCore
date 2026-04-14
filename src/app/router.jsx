@@ -22,6 +22,7 @@ const IdentifyPage = lazy(() => import('../features/plants/pages/IdentifyPage'))
 const MyPlantsPage = lazy(() => import('../features/plants/pages/MyPlantsPage'));
 const PlantDetailPage = lazy(() => import('../features/plants/pages/PlantDetailPage'));
 const SearchPlantPage = lazy(() => import('../features/plants/pages/SearchPlantPage'));
+const RecommendPlantPage = lazy(() => import('../features/plants/pages/RecommendPlantPage'));
 
 const MyProfilePage = lazy(() => import('../features/profile/pages/MyProfilePage'));
 const UserProfilePage = lazy(() => import('../features/profile/pages/UserProfilePage'));
@@ -56,6 +57,7 @@ export default function AppRouter() {
               <Route path="/explorar" element={<ExplorePage />} />
               <Route path="/identificar" element={<IdentifyPage />} />
               <Route path="/buscar-planta" element={<SearchPlantPage />} />
+              <Route path="/recomendar-planta" element={<RecommendPlantPage />} />
               <Route path="/minhas-plantas" element={<MyPlantsPage />} />
               <Route path="/planta/:plantaId" element={<PlantDetailPage />} />
               <Route path="/comunidades" element={<ComunidadesPage />} />
