@@ -2,7 +2,27 @@ import api from '../../../lib/axios';
 
 export const postService = {
   create(data) {
-    return api.post('/Post', data, { headers: { 'X-Skip-PascalCase': true } }).then((r) => ({ status: r.status, data: r.data }));
+    const { conteudo, plantaId, comunidadeId, hashtags, categorias, palavrasChave } = data || {};
+
+    const normalizeArray = (arr) => {
+      if (!arr) return null;
+      if (!Array.isArray(arr)) return null;
+      const cleaned = arr
+        .map((v) => (typeof v === 'string' ? v.trim() : v))
+        .filter((v) => v !== null && v !== undefined && v !== '');
+      return cleaned.length ? cleaned : null;
+    };
+
+    const payload = {
+      conteudo: (typeof conteudo === 'string' ? conteudo.trim() : '') || '',
+      plantaId: plantaId || null,
+      comunidadeId: comunidadeId || null,
+      hashtags: normalizeArray(hashtags),
+      categorias: normalizeArray(categorias),
+      palavrasChave: normalizeArray(palavrasChave),
+    };
+
+    return api.post('/Post', payload, { headers: { 'X-Skip-PascalCase': true } }).then((r) => ({ status: r.status, data: r.data }));
   },
 
   update(postId, conteudo) {
