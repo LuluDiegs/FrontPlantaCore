@@ -5,10 +5,9 @@ export default function AuthGuard() {
   const tokens = useAuthStore((s) => s.tokens);
   const location = useLocation();
 
+ 
   if (!tokens?.tokenAcesso) {
     return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
+  } 
   return <Outlet />;
 }
-
