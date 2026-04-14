@@ -5,7 +5,7 @@ import GuestGuard from '../shared/components/guards/GuestGuard';
 import AppLayout from '../shared/components/Layout/AppLayout';
 import ErrorBoundary from '../shared/components/ErrorBoundary';
 import Spinner from '../shared/components/ui/Spinner';
-
+//teste
 const LoginPage = lazy(() => import('../features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('../features/auth/pages/RegisterPage'));
 const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswordPage'));
