@@ -29,12 +29,28 @@ export function useFollowers(usuarioId, pagina = 1) {
   });
 }
 
+export function useMyFollowers(pagina = 1) {
+  return useQuery({
+    queryKey: ['myFollowers', pagina],
+    queryFn: () => profileService.getMyFollowers(pagina),
+    select: (data) => data.dados,
+  });
+}
+
 export function useFollowing(usuarioId, pagina = 1) {
   return useQuery({
     queryKey: ['following', usuarioId, pagina],
     queryFn: () => profileService.getFollowing(usuarioId, pagina),
     select: (data) => data.dados,
     enabled: !!usuarioId,
+  });
+}
+
+export function useMyFollowing(pagina = 1) {
+  return useQuery({
+    queryKey: ['myFollowing', pagina],
+    queryFn: () => profileService.getMyFollowing(pagina),
+    select: (data) => data.dados,
   });
 }
 
