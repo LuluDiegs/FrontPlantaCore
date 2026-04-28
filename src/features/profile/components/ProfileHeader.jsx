@@ -92,7 +92,12 @@ function ProfileActionButtons({ profile, toggleFollow }) {
 
   if (profile.userSegueEste) {
     return (
-      <Button variant="ghost" size="sm" loading={toggleFollow.isPending}>
+      <Button
+        variant="ghost"
+        size="sm"
+        loading={toggleFollow.isPending}
+        onClick={() => toggleFollow.mutate({ usuarioId: profile.id, isFollowing: true })}
+      >
         <UserMinus size={16} /> Seguindo
       </Button>
     );

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MapPin, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useJoinEvent, useLeaveEvent, useDeleteEvent } from '../hooks/useEvents';
 import styles from './EventCard.module.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function EventCard({ event }) {
   const navigate = useNavigate();
@@ -18,7 +18,11 @@ export default function EventCard({ event }) {
 
       <div className={styles.cardHeader}>
         <div>
-          <h3>{event.title}</h3>
+          <h3>
+            <Link to={`/eventos/${event.id}`} className={styles.titleLink}>
+              {event.title}
+            </Link>
+          </h3>
           <span className={styles.date}>
             {new Date(event.date).toLocaleString('pt-BR')}
           </span>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Flower2, Camera, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMyPlants } from '../hooks/usePlants';
 import { useSearchMyPlants } from '../hooks/usePlants';
+import { useGenerateCareRemindersForAll } from '../hooks/useReminders';
 import PlantCard from '../components/PlantCard';
 import { SkeletonCard } from '../../../shared/components/ui/Skeleton';
 import EmptyState from '../../../shared/components/ui/EmptyState';
@@ -14,6 +15,7 @@ export default function MyPlantsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedTerm, setDebouncedTerm] = useState('');
   const [searchPage, setSearchPage] = useState(1);
+  const generateAllReminders = useGenerateCareRemindersForAll();
   const { data, isLoading, refetch } = useMyPlants(page);
   const { data: searchData, isLoading: isSearching, refetch: refetchSearch } = useSearchMyPlants(debouncedTerm, searchPage);
 
@@ -45,6 +47,14 @@ export default function MyPlantsPage() {
       <div className={styles.header}>
         <h1>Minhas Plantas</h1>
         <div className={styles.actions}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => generateAllReminders.mutate()}
+            loading={generateAllReminders.isPending}
+          >
+            Gerar lembretes
+          </Button>
           <Link to="/identificar">
             <Button variant="secondary" size="sm">
               <Camera size={16} /> Identificar

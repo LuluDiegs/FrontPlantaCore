@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { postService } from '../services/postService';
 
+function normalizePosts(payload) {
+  return payload?.posts || payload?.dados?.posts || payload?.dados?.itens || payload?.dados || [];
+}
+
 export function usePostSearch() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -10,7 +14,7 @@ export function usePostSearch() {
     setLoading(true);
     try {
       const data = await postService.searchByHashtag(hashtag, 1, 50, ordenarPor);
-      setResults(data);
+      setResults(normalizePosts(data));
       setError(null);
     } catch (e) {
       setError(e);
@@ -23,7 +27,7 @@ export function usePostSearch() {
     setLoading(true);
     try {
       const data = await postService.searchByCategoria(categoria, 1, 50, ordenarPor);
-      setResults(data);
+      setResults(normalizePosts(data));
       setError(null);
     } catch (e) {
       setError(e);
@@ -36,7 +40,7 @@ export function usePostSearch() {
     setLoading(true);
     try {
       const data = await postService.searchByPalavraChave(palavraChave, 1, 50, ordenarPor);
-      setResults(data);
+      setResults(normalizePosts(data));
       setError(null);
     } catch (e) {
       setError(e);

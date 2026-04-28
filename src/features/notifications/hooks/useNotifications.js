@@ -1,40 +1,40 @@
-// Hook para configurações de notificações
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import { notificationService } from '../services/notificationService';
+
 export function useNotificationSettings() {
   return useQuery({
     queryKey: ['notification-settings'],
     queryFn: notificationService.getConfiguracoes,
+    select: (data) => data?.dados ?? data,
     retry: 1,
   });
 }
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-import { notificationService } from '../services/notificationService';
 
 export function useNotifications() {
   return useQuery({
     queryKey: ['notifications'],
     queryFn: notificationService.getAll,
     select: (data) => {
-      // Suporte a múltiplos formatos de backend
       let notificacoesSociais = [];
       let lembretes = [];
       let all = [];
       let unreadCount = 0;
 
-      if (data.dados) {
+      if (data?.dados) {
         notificacoesSociais = data.dados.notificacoesSociais || [];
         lembretes = data.dados.lembretes || [];
         unreadCount = data.dados.totalNaoLidas ?? 0;
       } else if (Array.isArray(data)) {
         all = data;
-        unreadCount = all.filter(n => !n.lida).length;
-      } else if (data.notificacoes) {
+        unreadCount = all.filter((n) => !n.lida).length;
+      } else if (data?.notificacoes) {
         all = data.notificacoes;
-        unreadCount = data.totalNaoLidas ?? all.filter(n => !n.lida).length;
+        unreadCount = data.totalNaoLidas ?? all.filter((n) => !n.lida).length;
       } else {
-        notificacoesSociais = data.notificacoesSociais || [];
-        lembretes = data.lembretes || [];
-        unreadCount = data.totalNaoLidas ?? 0;
+        notificacoesSociais = data?.notificacoesSociais || [];
+        lembretes = data?.lembretes || [];
+        unreadCount = data?.totalNaoLidas ?? 0;
       }
 
       if (all.length === 0) {
@@ -49,7 +49,7 @@ export function useNotifications() {
       };
     },
     retry: 1,
-    refetchInterval: 30_000, // Auto-refetch a cada 30s
+    refetchInterval: 30_000,
   });
 }
 
@@ -73,24 +73,20 @@ export function useMarkAsRead() {
       qc.setQueryData(['notifications'], (old) => {
         if (!old) return old;
 
-        // Backend retorna notificacoesSociais e lembretes separadamente
         const notificacoesSociais = (old.notificacoesSociais || []).map((n) =>
           n.id === notificacaoId ? { ...n, lida: true } : n
         );
-
         const lembretes = (old.lembretes || []).map((n) =>
           n.id === notificacaoId ? { ...n, lida: true } : n
         );
-
         const allNotifs = [...notificacoesSociais, ...lembretes];
-        const unreadCount = allNotifs.filter((n) => !n.lida).length;
 
         return {
           ...old,
           notificacoesSociais,
           lembretes,
           notifications: allNotifs,
-          unreadCount,
+          unreadCount: allNotifs.filter((n) => !n.lida).length,
         };
       });
     },
@@ -117,13 +113,12 @@ export function useMarkAllAsRead() {
 
         const notificacoesSociais = (old.notificacoesSociais || []).map((n) => ({ ...n, lida: true }));
         const lembretes = (old.lembretes || []).map((n) => ({ ...n, lida: true }));
-        const notifications = [...notificacoesSociais, ...lembretes];
 
         return {
           ...old,
           notificacoesSociais,
           lembretes,
-          notifications,
+          notifications: [...notificacoesSociais, ...lembretes],
           unreadCount: 0,
         };
       });
@@ -152,14 +147,13 @@ export function useDeleteNotification() {
         const notificacoesSociais = (old.notificacoesSociais || []).filter((n) => n.id !== notificacaoId);
         const lembretes = (old.lembretes || []).filter((n) => n.id !== notificacaoId);
         const notifications = [...notificacoesSociais, ...lembretes];
-        const unreadCount = notifications.filter((n) => !n.lida).length;
 
         return {
           ...old,
           notificacoesSociais,
           lembretes,
           notifications,
-          unreadCount,
+          unreadCount: notifications.filter((n) => !n.lida).length,
         };
       });
     },
@@ -190,6 +184,21 @@ export function useDeleteAllNotifications() {
     onError: () => {
       qc.invalidateQueries({ queryKey: ['notifications'] });
       toast.error('Erro ao remover notificações');
+    },
+  });
+}
+
+export function useUpdateNotificationSettings() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: notificationService.updateConfiguracoes,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['notification-settings'] });
+      toast.success('Preferências de notificação atualizadas');
+    },
+    onError: () => {
+      toast.error('Erro ao atualizar preferências');
     },
   });
 }
