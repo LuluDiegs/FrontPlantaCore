@@ -9,6 +9,8 @@ import Button from '../../../shared/components/ui/Button';
 import Modal from '../../../shared/components/ui/Modal';
 import { fullDate } from '../../../shared/utils/formatDate';
 import styles from './PlantDetailPage.module.css';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import { DraggableMarker } from '../../../shared/components/ui/DraggableMarker';
 
 export default function PlantDetailPage() {
   const { plantaId } = useParams();
@@ -18,6 +20,14 @@ export default function PlantDetailPage() {
   const { data: plant, isLoading } = usePlantDetail(plantaId);
   const deletePlant = useDeletePlant();
   const generateReminder = useGenerateCareReminder();
+
+  const [shareLocation, setShareLocation] = useState(false);
+  const [position, setPosition] = useState({
+    lat: -23.9700,
+    lng: -46.3100,
+  });
+
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   if (isLoading) return <Spinner />;
   if (!plant) return null;
@@ -69,6 +79,52 @@ export default function PlantDetailPage() {
 
       <PlantCareInfo plant={plant} />
 
+      <div className={styles.switchRow}>
+        <div className={styles.switchLabel}>
+          <span>Compartilhar localização</span>
+        </div>
+
+        <button
+          className={`${styles.switch} ${shareLocation ? styles.active : ''}`}
+          onClick={() => setShareLocation(prev => !prev)}
+          aria-pressed={shareLocation}
+        >
+          <span className={styles.thumb} />
+        </button>
+      </div>
+
+      {shareLocation && (
+        <>
+          <div className={styles.mapWrapper}>
+            <MapContainer
+              center={position}
+              zoom={13}
+              scrollWheelZoom={true}
+              className={styles.map}
+            >
+              <TileLayer
+                attribution="&copy; OpenStreetMap contributors"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <DraggableMarker
+                position={position}
+                setPosition={setPosition}
+              />
+            </MapContainer>
+          </div>
+
+          <div className={styles.mapActions}>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowLocationModal(true)}
+            >
+              Confirmar localização
+            </Button>
+          </div>
+        </>
+      )}
+
       <div className={styles.actions}>
         <Button
           variant="secondary"
@@ -89,6 +145,38 @@ export default function PlantDetailPage() {
           Remover planta
         </Button>
       </div>
+
+      <Modal
+        isOpen={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        title="Compartilhar localização"
+      >
+        <p className={styles.deleteText}>
+          Você deseja compartilhar a localização desta planta? Isso permitirá salvar o ponto no mapa.
+        </p>
+
+        <div className={styles.deleteActions}>
+          <Button
+            variant="ghost"
+            onClick={() => setShowLocationModal(false)}
+          >
+            Cancelar
+          </Button>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              console.log(position);
+
+              // adicionar a chamada de api pra salvar aqui?
+
+              setShowLocationModal(false);
+            }}
+          >
+            Confirmar
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         isOpen={showDeleteModal}
