@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Leaf, Trash2, BellRing, Calendar } from 'lucide-react';
-import { usePlantDetail, useDeletePlant, useGenerateCareReminder } from '../hooks/usePlants';
+import { usePlantDetail, useDeletePlant, useGenerateCareReminder, useUpdatePlantLocation } from '../hooks/usePlants';
 import PlantCareInfo from '../components/PlantCareInfo';
 import ToxicityBanner from '../components/ToxicityBanner';
 import Spinner from '../../../shared/components/ui/Spinner';
@@ -22,12 +22,33 @@ export default function PlantDetailPage() {
   const generateReminder = useGenerateCareReminder();
 
   const [shareLocation, setShareLocation] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [modalType, setModalType] = useState(null);
   const [position, setPosition] = useState({
     lat: -23.9700,
     lng: -46.3100,
   });
 
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const updateLocation = useUpdatePlantLocation();
+
+  const hasSavedLocation =
+    plant?.compartilharLocalizacao &&
+    plant?.latitude &&
+    plant?.longitude;
+
+  useEffect(() => {
+    if (!plant) return;
+
+    setShareLocation(plant.compartilharLocalizacao ?? false);
+
+    if (plant.latitude && plant.longitude) {
+      setPosition({
+        lat: plant.latitude,
+        lng: plant.longitude,
+      });
+    }
+  }, [plant]);
 
   if (isLoading) return <Spinner />;
   if (!plant) return null;
@@ -86,7 +107,21 @@ export default function PlantDetailPage() {
 
         <button
           className={`${styles.switch} ${shareLocation ? styles.active : ''}`}
-          onClick={() => setShareLocation(prev => !prev)}
+          onClick={() => {
+            if (!shareLocation) {
+              setShareLocation(true);
+              setIsDirty(true);
+              return;
+            }
+
+            if (hasSavedLocation && !isDirty) {
+              setModalType('disable-sharing');
+              setShowLocationModal(true);
+            } else {
+              setShareLocation(false);
+              setIsDirty(false);
+            }
+          }}
           aria-pressed={shareLocation}
         >
           <span className={styles.thumb} />
@@ -94,35 +129,38 @@ export default function PlantDetailPage() {
       </div>
 
       {shareLocation && (
-        <>
-          <div className={styles.mapWrapper}>
-            <MapContainer
-              center={position}
-              zoom={13}
-              scrollWheelZoom={true}
-              className={styles.map}
-            >
-              <TileLayer
-                attribution="&copy; OpenStreetMap contributors"
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <DraggableMarker
-                position={position}
-                setPosition={setPosition}
-              />
-            </MapContainer>
-          </div>
+        <div className={styles.mapWrapper}>
+          <MapContainer
+            center={position}
+            zoom={13}
+            scrollWheelZoom={true}
+            className={styles.map}
+          >
+            <TileLayer
+              attribution="&copy; OpenStreetMap contributors"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <DraggableMarker
+              position={position}
+              setPosition={(pos) => {
+                setPosition(pos);
+                setIsDirty(true);
+              }}
+            />
+          </MapContainer>
+        </div>
+      )}
 
-          <div className={styles.mapActions}>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setShowLocationModal(true)}
-            >
-              Confirmar localização
-            </Button>
-          </div>
-        </>
+      {shareLocation && (
+        <Button
+          onClick={() => {
+            setModalType('confirm-location');
+            setShowLocationModal(true);
+          }}
+          disabled={!isDirty}
+        >
+          Confirmar localização
+        </Button>
       )}
 
       <div className={styles.actions}>
@@ -149,10 +187,16 @@ export default function PlantDetailPage() {
       <Modal
         isOpen={showLocationModal}
         onClose={() => setShowLocationModal(false)}
-        title="Compartilhar localização"
+        title={
+          modalType === 'disable-sharing'
+            ? 'Parar compartilhamento'
+            : 'Confirmar localização'
+        }
       >
         <p className={styles.deleteText}>
-          Você deseja compartilhar a localização desta planta? Isso permitirá salvar o ponto no mapa.
+          {modalType === 'disable-sharing'
+            ? 'Deseja parar de compartilhar a localização desta planta?'
+            : 'Confirmar a localização selecionada?'}
         </p>
 
         <div className={styles.deleteActions}>
@@ -166,12 +210,33 @@ export default function PlantDetailPage() {
           <Button
             variant="primary"
             onClick={() => {
-              console.log(position);
+              if (modalType === 'disable-sharing') {
+                updateLocation.mutate({
+                  plantaId,
+                  data: {
+                    compartilharLocalizacao: false,
+                  },
+                });
 
-              // adicionar a chamada de api pra salvar aqui?
+                setShareLocation(false);
+              }
+
+              if (modalType === 'confirm-location') {
+                updateLocation.mutate({
+                  plantaId,
+                  data: {
+                    compartilharLocalizacao: true,
+                    latitude: position.lat,
+                    longitude: position.lng,
+                  },
+                });
+
+                setIsDirty(false);
+              }
 
               setShowLocationModal(false);
             }}
+            loading={updateLocation.isPending}
           >
             Confirmar
           </Button>
