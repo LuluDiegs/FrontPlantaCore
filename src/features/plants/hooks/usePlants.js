@@ -179,3 +179,36 @@ export function useGenerateCareReminder() {
     },
   });
 }
+
+export function useUpdatePlantLocation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ plantaId, data }) =>
+      plantService.updateLocation(plantaId, data),
+
+    onSuccess: (data, variables) => {
+      qc.invalidateQueries({ queryKey: ['myPlants'] });
+      qc.invalidateQueries({ queryKey: ['plant', variables.plantaId] });
+
+      displayServerMessageAsToast(
+        data,
+        'Localização atualizada com sucesso'
+      );
+    },
+
+    onError: (err) => {
+      const serverData = err.response?.data;
+
+      if (serverData) {
+        displayServerMessageAsToast(
+          serverData,
+          'Erro ao atualizar localização',
+          true
+        );
+      } else {
+        toast.error(err.message || 'Erro ao atualizar localização');
+      }
+    },
+  });
+}
