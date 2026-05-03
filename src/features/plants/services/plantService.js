@@ -59,4 +59,8 @@ export const plantService = {
   generateCareReminder(plantaId) {
     return api.post(`/Planta/${plantaId}/gerar-lembrete-cuidado`).then((r) => r.data);
   },
+
+  updateLocation(plantaId, data) {
+    return api.put(`/Planta/localizacao/${plantaId}`, data).then((r) => r.data);
+  },
 };
