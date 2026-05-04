@@ -67,28 +67,28 @@ export const postService = {
     return api.get(`/Post/usuario/${usuarioId}/curtidos`).then((r) => r.data);
   },
 
-  searchByHashtag(hashtag, pagina = 1, tamanho = 20, ordenarPor) {
-    const params = { hashtag, pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get('/Post/buscar/hashtag', { params }).then((r) => r.data);
+  searchByHashtag(hashtag) {
+    return api.get('/busca', {
+      params: { termo: hashtag },
+    }).then((r) => r.data);
   },
 
-  searchByCategoria(categoria, pagina = 1, tamanho = 20, ordenarPor) {
-    const params = { categoria, pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get('/Post/buscar/categoria', { params }).then((r) => r.data);
+  searchByCategoria(categoria) {
+    return api.get('/busca', {
+      params: { termo: categoria },
+    }).then((r) => r.data);
   },
 
-  searchByPalavraChave(palavraChave, pagina = 1, tamanho = 20, ordenarPor) {
-    const params = { palavraChave, pagina, tamanho };
-    if (ordenarPor) params.ordenarPor = ordenarPor;
-    return api.get('/Post/buscar/palavra-chave', { params }).then((r) => r.data);
+  searchByPalavraChave(palavraChave) {
+    return api.get('/busca', {
+      params: { termo: palavraChave },
+    }).then((r) => r.data);
   },
 
-  // General search endpoint combining hashtag/categoria/palavraChave and other filters
-  search(params) {
-    // params can include: hashtag, categoria, palavraChave, usuarioId, comunidadeId, pagina, tamanho
-    return api.get('/Post/buscar', { params }).then((r) => r.data);
+  search(term) {
+    return api.get('/busca', {
+      params: { termo: term },
+    }).then((r) => r.data);
   },
 
   save(postId) {

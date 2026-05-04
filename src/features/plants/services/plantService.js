@@ -60,7 +60,6 @@ export const plantService = {
     return api.post(`/Planta/${plantaId}/gerar-lembrete-cuidado`).then((r) => r.data);
   },
 
-
   recommend(data) {
     const formData = new FormData();
     formData.append('Experiencia', data.experiencia);
@@ -72,5 +71,9 @@ export const plantService = {
     return api.post('/Planta/recomendacao', formData, {
       timeout: 60000,
     }).then((r) => r.data);
+  },
+
+  updateLocation(plantaId, data) {
+    return api.put(`/Planta/localizacao/${plantaId}`, data).then((r) => r.data);
   },
 };

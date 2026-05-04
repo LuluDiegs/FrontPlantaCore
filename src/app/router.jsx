@@ -32,10 +32,13 @@ const FollowRequestsPage = lazy(() => import('../features/profile/pages/FollowRe
 const NotificationsPage = lazy(() => import('../features/notifications/pages/NotificationsPage'));
 const ComunidadesPage = lazy(() => import('../features/comunidade/pages/ComunidadesPage'));
 const ComunidadeDetailPage = lazy(() => import('../features/comunidade/pages/ComunidadeDetailPage'));
+const DiscoveryPage = lazy(() => import('../features/discovery/pages/DiscoveryPage'));
+const StoresPage = lazy(() => import('../features/stores/pages/StoresPage'));
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 const EventsPage = lazy(() => import('../features/events/pages/EventsPage'));
 const CreateUpdateEventPage = lazy(() => import('../features/events/pages/CreateUpdateEventPage'));
+const EventDetailPage = lazy(() => import('../features/events/pages/EventDetailPage'));
 
 export default function AppRouter() {
   return (
@@ -55,6 +58,8 @@ export default function AppRouter() {
             <Route element={<AppLayout />}>
               <Route path="/feed" element={<FeedPage />} />
               <Route path="/explorar" element={<ExplorePage />} />
+              <Route path="/buscar" element={<DiscoveryPage />} />
+              <Route path="/lojas" element={<StoresPage />} />
               <Route path="/identificar" element={<IdentifyPage />} />
               <Route path="/buscar-planta" element={<SearchPlantPage />} />
               <Route path="/recomendar-planta" element={<RecommendPlantPage />} />
@@ -71,6 +76,7 @@ export default function AppRouter() {
               <Route path="/usuario/:usuarioId" element={<UserProfilePage />} />
               <Route path="/notificacoes" element={<NotificationsPage />} />
               <Route path="/eventos" element={<EventsPage />} />
+              <Route path="/eventos/:id" element={<EventDetailPage />} />
               <Route path="/criar-evento" element={<CreateUpdateEventPage />} />
               <Route path="/editar-evento/:id" element={<CreateUpdateEventPage />} />
             </Route>

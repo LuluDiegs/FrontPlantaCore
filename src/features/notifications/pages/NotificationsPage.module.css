@@ -30,6 +30,50 @@
   flex-shrink: 0;
 }
 
+.settingsSection {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(73, 105, 74, 0.14);
+  background: #ffffff;
+}
+
+.settingsHeader h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+}
+
+.settingsHeader p {
+  margin: 8px 0 0;
+  color: var(--color-text-soft);
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f4f7f1;
+  color: var(--color-text-dark);
+  font-weight: 600;
+}
+
+.settingItem input {
+  width: 18px;
+  height: 18px;
+}
+
 @media (max-width: 520px) {
   .page {
     padding: 16px 0;
@@ -46,5 +90,9 @@
 
   .actions button {
     flex: 1;
+  }
+
+  .settingsSection {
+    margin: 24px 16px 0;
   }
 }

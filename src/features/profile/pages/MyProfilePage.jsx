@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FileText, PenSquare } from 'lucide-react';
-import { useMyProfile, useFollowers, useFollowing } from '../hooks/useProfile';
+import { useMyProfile, useMyFollowers, useMyFollowing } from '../hooks/useProfile';
 import { useUserPosts, useDeletePost } from '../../posts/hooks/usePosts';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
@@ -15,8 +15,8 @@ import useInfiniteScroll from '../../../shared/hooks/useInfiniteScroll';
 export default function MyProfilePage() {
   const { data: profile, isLoading } = useMyProfile();
 
-  const followers = useFollowers(profile?.id);
-  const following = useFollowing(profile?.id);
+  const followers = useMyFollowers();
+  const following = useMyFollowing();
 
   const {
     data: posts,

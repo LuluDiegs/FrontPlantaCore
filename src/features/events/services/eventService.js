@@ -22,11 +22,11 @@ export const eventsService = {
   },
 
   join(eventoId) {
-    return api.put(`/Evento/marcar-participacao`, null, { params: { eventoId } }).then((r) => r.data);
+    return api.post(`/Evento/${eventoId}/participacao`).then((r) => r.data);
   },
 
   leave(eventoId) {
-    return api.put(`/Evento/desmarcar-participacao`, null, { params: { eventoId } }).then((r) => r.data);
+    return api.delete(`/Evento/${eventoId}/participacao`).then((r) => r.data);
   },
 
   getParticipants(eventoId) {

@@ -41,8 +41,20 @@ export const profileService = {
     }).then((r) => r.data);
   },
 
+  getMyFollowers(pagina = 1, tamanho = 20) {
+    return api.get('/Usuario/meus-seguidores', {
+      params: { pagina, tamanho },
+    }).then((r) => r.data);
+  },
+
   getFollowing(usuarioId, pagina = 1, tamanho = 20) {
     return api.get(`/Usuario/${usuarioId}/seguindo`, {
+      params: { pagina, tamanho },
+    }).then((r) => r.data);
+  },
+
+  getMyFollowing(pagina = 1, tamanho = 20) {
+    return api.get('/Usuario/meu-seguindo', {
       params: { pagina, tamanho },
     }).then((r) => r.data);
   },
@@ -62,5 +74,43 @@ export const profileService = {
 
   rejectFollowRequest(solicitacaoId) {
     return api.post(`/Usuario/solicitacoes-seguir/${solicitacaoId}/rejeitar`).then((r) => r.data);
+  },
+
+  requestReactivation(email) {
+    return api.post('/Usuario/reativar/solicitar', { email }).then((r) => r.data);
+  },
+
+  confirmReactivation(data) {
+    return api.post('/Usuario/reativar/confirmar', data).then((r) => r.data);
+  },
+
+  verifyReactivationToken(data) {
+    return api.post('/Usuario/reativar/verificar-token', data).then((r) => r.data);
+  },
+
+  resetReactivationPassword(data) {
+    return api.post('/Usuario/reativar/confirmar', data).then((r) => r.data);
+  },
+
+  getUserPlants(usuarioId, pagina = 1, tamanho = 12) {
+    return api.get(`/Usuario/${usuarioId}/plantas`, {
+      params: { pagina, tamanho },
+    }).then((r) => r.data);
+  },
+
+  getUserPosts(usuarioId, pagina = 1, tamanho = 10) {
+    return api.get(`/Usuario/${usuarioId}/posts`, {
+      params: { pagina, tamanho },
+    }).then((r) => r.data);
+  },
+
+  getSuggestions(quantidade = 8) {
+    return api.get('/Usuario/sugestoes', {
+      params: { quantidade },
+    }).then((r) => r.data);
+  },
+
+  getRelation(usuarioId) {
+    return api.get(`/Usuario/${usuarioId}/relacao`).then((r) => r.data);
   },
 };

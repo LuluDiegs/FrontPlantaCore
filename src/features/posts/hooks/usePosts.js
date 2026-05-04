@@ -271,26 +271,27 @@ export function useSearchFeed(params) {
       const p = params || {};
       const q = (p.q || '').trim();
 
-      // mode-specific endpoints
-      if (p.mode === 'hashtag') return postService.searchByHashtag(q, pageParam, p.tamanho || 10, p.ordenarPor);
-      if (p.mode === 'categoria') return postService.searchByCategoria(q, pageParam, p.tamanho || 10, p.ordenarPor);
-      if (p.mode === 'palavra') return postService.searchByPalavraChave(q, pageParam, p.tamanho || 10, p.ordenarPor);
+      if (p.mode === 'hashtag') return postService.searchByHashtag(q);
+      if (p.mode === 'categoria') return postService.searchByCategoria(q);
+      if (p.mode === 'palavra') return postService.searchByPalavraChave(q);
       if (p.mode === 'usuario') return postService.getByUser(q, pageParam, p.tamanho || 10, p.ordenarPor);
       if (p.mode === 'comunidade') return postService.getByCommunity(q, pageParam, p.tamanho || 10, p.ordenarPor);
 
-      // fallback to unified search (supports hashtag/categoria/palavraChave/usuarioId/comunidadeId)
-      return postService.search({ ...(p.params || {}), q: undefined, pagina: pageParam, tamanho: p.tamanho || 10, hashtag: p.hashtag, categoria: p.categoria, palavraChave: p.palavraChave, usuarioId: p.usuarioId, comunidadeId: p.comunidadeId, ordenarPor: p.ordenarPor });
+      return postService.search(q || p.palavraChave || p.hashtag || p.categoria || '');
     },
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage) return undefined;
       const pageSize = params?.tamanho || 10;
       const dados = lastPage.dados ?? lastPage;
+      if (dados?.posts || Array.isArray(lastPage?.posts)) return undefined;
       if (dados?.temProxima !== undefined) return dados.temProxima ? allPages.length + 1 : undefined;
       const itens = Array.isArray(dados) ? dados : (Array.isArray(dados?.itens) ? dados.itens : []);
       if (!itens || itens.length < pageSize) return undefined;
       return allPages.length + 1;
     },
     select: (data) => data.pages.flatMap((page) => {
+      if (Array.isArray(page?.posts)) return page.posts;
+      if (Array.isArray(page?.dados?.posts)) return page.dados.posts;
       const dados = page.dados ?? page;
       const arr = Array.isArray(dados) ? dados : (Array.isArray(dados?.itens) ? dados.itens : []);
       return Array.isArray(arr) ? arr : [];

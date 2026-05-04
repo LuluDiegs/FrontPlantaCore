@@ -5,6 +5,8 @@ import {
   useMarkAllAsRead,
   useDeleteNotification,
   useDeleteAllNotifications,
+  useNotificationSettings,
+  useUpdateNotificationSettings,
 } from '../hooks/useNotifications';
 import NotificationList from '../components/NotificationList';
 import Button from '../../../shared/components/ui/Button';
@@ -12,15 +14,26 @@ import styles from './NotificationsPage.module.css';
 
 export default function NotificationsPage() {
   const { data, isLoading } = useNotifications();
+  const { data: settings } = useNotificationSettings();
   const markAsRead = useMarkAsRead();
   const markAllAsRead = useMarkAllAsRead();
   const deleteNotification = useDeleteNotification();
   const deleteAll = useDeleteAllNotifications();
-
+  const updateSettings = useUpdateNotificationSettings();
 
   let notifications = data?.notifications || [];
   const unreadCount = data?.unreadCount || 0;
   let hasNotifications = notifications.length > 0;
+  const settingEntries = [
+    ['receberCurtidas', 'Curtidas'],
+    ['receberComentarios', 'Comentários'],
+    ['receberNovoSeguidor', 'Novos seguidores'],
+    ['receberSolicitacaoSeguir', 'Solicitações de seguir'],
+    ['receberSolicitacaoAceita', 'Solicitações aceitas'],
+    ['receberEvento', 'Eventos'],
+    ['receberPlantaCuidado', 'Lembretes de cuidado'],
+    ['receberPlantaIdentificada', 'Plantas identificadas'],
+  ];
 
   // Se o contador for maior que zero mas a lista está vazia, mostra placeholders
   if (!hasNotifications && unreadCount > 0) {
@@ -78,6 +91,34 @@ export default function NotificationsPage() {
         onRead={(id) => markAsRead.mutate(id)}
         onDelete={(id) => deleteNotification.mutate(id)}
       />
+
+      {settings && (
+        <section className={styles.settingsSection}>
+          <div className={styles.settingsHeader}>
+            <h2>Preferências</h2>
+            <p>Essas opções atualizam diretamente as configurações do backend.</p>
+          </div>
+
+          <div className={styles.settingsGrid}>
+            {settingEntries.map(([key, label]) => (
+              <label key={key} className={styles.settingItem}>
+                <span>{label}</span>
+                <input
+                  type="checkbox"
+                  checked={Boolean(settings[key])}
+                  onChange={(event) =>
+                    updateSettings.mutate({
+                      ...settings,
+                      [key]: event.target.checked,
+                    })
+                  }
+                  disabled={updateSettings.isPending}
+                />
+              </label>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

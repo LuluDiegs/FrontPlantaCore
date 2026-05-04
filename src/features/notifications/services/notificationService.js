@@ -27,4 +27,7 @@ export const notificationService = {
   getConfiguracoes() {
     return api.get('/Notificacao/configuracoes').then((r) => r.data);
   },
+  updateConfiguracoes(configuracoes) {
+    return api.put('/Notificacao/configuracoes', configuracoes).then((r) => r.data);
+  },
 };
