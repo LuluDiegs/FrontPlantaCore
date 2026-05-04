@@ -109,6 +109,7 @@ function extractResult(raw) {
     visited.add(value);
 
     const nomeComum =
+      value.nome_comum ??
       value.nomeComum ??
       value.NomeComum ??
       value.nome ??
