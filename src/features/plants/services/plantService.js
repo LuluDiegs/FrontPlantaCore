@@ -42,6 +42,15 @@ export const plantService = {
       });
   },
 
+  getAllPlants() {
+    return api.get('/Planta/todas-plantas')
+      .then((r) => r.data)
+      .catch((err) => {
+        console.error('[plantService.getAllPlants] error:', err);
+        throw err;
+      });
+  },
+
   searchMyPlants(termo, pagina = 1, tamanho = 10) {
     return api.get('/Planta/minhas-plantas/buscar', {
       params: { termo, pagina, tamanho },
