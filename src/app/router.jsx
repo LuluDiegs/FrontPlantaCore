@@ -23,6 +23,7 @@ const MyPlantsPage = lazy(() => import('../features/plants/pages/MyPlantsPage'))
 const PlantDetailPage = lazy(() => import('../features/plants/pages/PlantDetailPage'));
 const SearchPlantPage = lazy(() => import('../features/plants/pages/SearchPlantPage'));
 const RecommendPlantPage = lazy(() => import('../features/plants/pages/RecommendPlantPage'));
+const MapPage = lazy(() => import('../features/plants/pages/MapPage'));
 
 const MyProfilePage = lazy(() => import('../features/profile/pages/MyProfilePage'));
 const UserProfilePage = lazy(() => import('../features/profile/pages/UserProfilePage'));
@@ -79,6 +80,7 @@ export default function AppRouter() {
               <Route path="/eventos/:id" element={<EventDetailPage />} />
               <Route path="/criar-evento" element={<CreateUpdateEventPage />} />
               <Route path="/editar-evento/:id" element={<CreateUpdateEventPage />} />
+              <Route path="/mapa" element={<MapPage />} />
             </Route>
           </Route>
 
