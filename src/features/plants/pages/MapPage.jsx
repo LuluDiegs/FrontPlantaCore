@@ -14,7 +14,7 @@ export default function MapPage() {
 		p.latitude &&
 		p.longitude
 	);
-
+ 
   const defaultPosition = {
     lat: -23.9700,
     lng: -46.3100,
