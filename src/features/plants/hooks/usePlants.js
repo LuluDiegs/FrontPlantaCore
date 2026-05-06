@@ -61,6 +61,23 @@ export function useMyPlants(pagina = 1) {
   });
 }
 
+export function useAllPlants() {
+  return useQuery({
+    queryKey: ['allPlants'],
+    queryFn: () => plantService.getAllPlants(),
+
+    select: (data) => {
+      if (!data) return data;
+
+      if (data.sucesso && Array.isArray(data.dados)) {
+        return data.dados;
+      }
+
+      return data;
+    },
+  });
+}
+
 export function usePlantDetail(plantaId) {
   return useQuery({
     queryKey: ['plant', plantaId],
