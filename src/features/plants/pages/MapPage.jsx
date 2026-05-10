@@ -7,7 +7,7 @@ import styles from './MapPage.module.css';
 
 export default function MapPage() {
   const navigate = useNavigate();
-  const { data: plants = [], isLoading } = useAllPlants();
+  const { data: plants = [] } = useAllPlants();
 
   const [selectedPlant, setSelectedPlant] = useState(null);
 
@@ -39,8 +39,8 @@ export default function MapPage() {
         🌿 Explore, capture e faça parte de grandes descobertas!
       </h1>
 
-      <div>
-        <div>
+      <div className={styles.content}>
+        <div className={styles.mapWrapper}>
           <MapContainer
             center={defaultPosition}
             zoom={13}
@@ -52,7 +52,7 @@ export default function MapPage() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {plantsWithLocation.map((plant, index) => (
+            {plantsWithLocation.map((plant) => (
               <Marker
                 key={plant.id}
                 position={[plant.latitude, plant.longitude]}
@@ -66,43 +66,90 @@ export default function MapPage() {
 
         {selectedPlant && (
           <div className={styles.sidePanel}>
-            {selectedPlant.fotoPlanta && (
+            <div className={styles.plantInfo}>
               <img
-                src={selectedPlant.fotoPlanta}
+                src={
+                  selectedPlant.fotoPlanta ||
+                  '/error-loading-plant-image.jpg'
+                }
                 alt={selectedPlant.nomeComum}
                 className={styles.plantImage}
+                onError={(e) => {
+                  e.currentTarget.src =
+                    '/error-loading-plant-image.jpg';
+                }}
               />
-            )}
 
-            <h2>
-              {selectedPlant.nomeComum ||
-                selectedPlant.nomeCientifico}
-            </h2>
+              <div className={styles.titleBlock}>
+                <h2 className={styles.plantName}>
+                  {selectedPlant.nomeComum || selectedPlant.nomeCientifico}
+                </h2>
 
-            {selectedPlant.familia && (
-              <p><strong>Família:</strong> {selectedPlant.familia}</p>
-            )}
+                {selectedPlant.nomeComum && selectedPlant.nomeCientifico && (
+                  <span className={styles.scientific}>
+                    {selectedPlant.nomeCientifico}
+                  </span>
+                )}
 
-            {selectedPlant.usuario && (
-              <div className={styles.userBox}>
-                {selectedPlant.usuario.fotoPerfil &&
-                  selectedPlant.usuario.fotoPerfil.trim() !== '' && (
-                    <img
-                      src={selectedPlant.usuario.fotoPerfil}
-                      alt="Perfil"
-                      className={styles.avatar}
-                    />
+                <div className={styles.badges}>
+                  {selectedPlant.familia && (
+                    <span className={styles.badge}>
+                      🌿 {selectedPlant.familia}
+                    </span>
                   )}
 
-                <div>
-                  <strong>{selectedPlant.usuario.nome}</strong>
+                  {selectedPlant.genero && (
+                    <span className={styles.badge}>
+                      🔬 {selectedPlant.genero}
+                    </span>
+                  )}
 
-                  {selectedPlant.usuario.biografia &&
-                    selectedPlant.usuario.biografia.trim() !== '' && (
-                      <p className={styles.bio}>
-                        {selectedPlant.usuario.biografia}
-                      </p>
-                    )}
+                  {selectedPlant.toxica && (
+                    <span className={styles.badgeDanger}>
+                      ☠️ Tóxica
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {selectedPlant.cuidados && (
+                <p className={styles.cuidados}>
+                  {selectedPlant.cuidados}
+                </p>
+              )}
+            </div>
+
+            {selectedPlant.usuario && (
+              <div className={styles.userFooter}>
+                <div>
+                  <img
+                    src={
+                      selectedPlant.usuario.fotoPerfil ||
+                      '/error-loading-user-image.jpg'
+                    }
+                    alt={selectedPlant.usuario.nome}
+                    className={styles.avatar}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextSibling.style.display =
+                        'flex';
+                    }}
+                  />
+
+                  <div
+                    className={styles.avatarFallback}
+                    style={{ display: 'none' }}
+                  >
+                    {selectedPlant.usuario.nome
+                      ?.charAt(0)
+                      .toUpperCase()}
+                  </div>
+                </div>
+
+                <div>
+                  <strong>
+                    {selectedPlant.usuario.nome}
+                  </strong>
                 </div>
               </div>
             )}
