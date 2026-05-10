@@ -30,17 +30,17 @@ export default function MapPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>
-        🌿 Explore, capture e faça parte de grandes descobertas!
-      </h1>
-
       <button className={styles.back} onClick={() => navigate(-1)}>
         <ArrowLeft size={20} />
         Voltar
       </button>
 
-      <div className={styles.container}>
-        <div className={styles.mapWrapper}>
+      <h1 className={styles.title}>
+        🌿 Explore, capture e faça parte de grandes descobertas!
+      </h1>
+
+      <div>
+        <div>
           <MapContainer
             center={defaultPosition}
             zoom={13}
@@ -56,10 +56,6 @@ export default function MapPage() {
               <Marker
                 key={plant.id}
                 position={[plant.latitude, plant.longitude]}
-                icon={L.divIcon({
-                  className: 'custom-marker',
-                  html: `<div class="marker-dot" style="animation-delay:${index * 0.05}s">🌱</div>`,
-                })}
                 eventHandlers={{
                   click: () => handleMarkerClick(plant),
                 }}
