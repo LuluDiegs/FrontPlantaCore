@@ -1,0 +1,214 @@
+.page {
+  margin: 0;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-text-dark);
+  margin-bottom: 8px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+  transition: color var(--transition), transform var(--transition);
+  align-self: flex-start;
+}
+
+.back:hover {
+  color: var(--color-forest);
+  transform: translateX(-3px);
+} 
+
+.mapWrapper {
+  flex: 1;
+  min-width: 0;
+  transition: flex 0.35s ease;
+}
+
+.map {
+  width: 98%;
+  height: 75vh;
+  border-radius: 2rem;
+}
+
+.content {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.sidePanel {
+  width: 0;
+  opacity: 0;
+  transform: translateX(20px);
+
+  overflow: hidden;
+
+  background: var(--color-white);
+  border-radius: 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  transition:
+    width 0.35s ease,
+    opacity 0.25s ease,
+    transform 0.35s ease,
+    padding 0.35s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.open {
+  width: 320px;
+  opacity: 1;
+  transform: translateX(0);
+  padding: 1rem;
+}
+
+.closed {
+  width: 0;
+  opacity: 0;
+  transform: translateX(20px);
+  padding: 0;
+}
+
+.sidePanel {
+  pointer-events: none;
+}
+
+.sidePanel.open {
+  pointer-events: auto;
+}
+
+.plantInfo {
+  flex: 1;
+  overflow: hidden;
+}
+
+.plantImage {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plantName {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--gradient-soft);
+  color: var(--color-forest);
+  font-weight: 600;
+}
+
+.badgeDanger {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 0, 0, 0.08);
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.cuidados {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--color-text-mid);
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userFooter {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+
+  font-size: 0.85rem;
+  color: var(--color-text-mid);
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.avatar,
+.avatarFallback {
+  width: 28px;
+  height: 28px;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .sidePanel {
+    width: 100%;
+    max-height: none;
+  }
+
+  .map {
+    width: 100%;
+    height: 60vh;
+  }
+}
