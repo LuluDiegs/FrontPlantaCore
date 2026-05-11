@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Compass, Camera, Search, Flower2, User, Calendar, Users, Sparkles, Store } from 'lucide-react';
+import { Home, Compass, Camera, Search, Flower2, User, Calendar, Users, Sparkles, Store, Map } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/identificar', label: 'Identificar', icon: Camera },
   { to: '/buscar-planta', label: 'Buscar Planta', icon: Search },
   { to: '/recomendar-planta', label: 'Recomendar Planta', icon: Sparkles },
+  { to: '/expedicao', label: 'Expedicao', icon: Map },
   { to: '/minhas-plantas', label: 'Minhas Plantas', icon: Flower2 },
   { to: '/eventos', label: 'Eventos', icon: Calendar },
   { to: '/lojas', label: 'Lojas', icon: Store },

@@ -211,3 +211,74 @@ export function useRecommendPlant() {
     },
   });
 }
+
+export function useUpdatePlantLocation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ plantaId, data }) =>
+      plantService.updateLocation(plantaId, data),
+
+    onSuccess: (data, variables) => {
+      qc.invalidateQueries({ queryKey: ['myPlants'] });
+      qc.invalidateQueries({ queryKey: ['plant', variables.plantaId] });
+
+      displayServerMessageAsToast(
+        data,
+        'Localizacao atualizada com sucesso'
+      );
+    },
+
+    onError: (err) => {
+      const serverData = err.response?.data;
+
+      if (serverData) {
+        displayServerMessageAsToast(
+          serverData,
+          'Erro ao atualizar localizacao',
+          true
+        );
+      } else {
+        toast.error(err.message || 'Erro ao atualizar localizacao');
+      }
+    },
+  });
+}
+
+export function useExpeditionNearby({ latitude, longitude, raioKm = 2, limite = 30 }) {
+  return useQuery({
+    queryKey: ['plantExpedition', latitude, longitude, raioKm, limite],
+    queryFn: () => plantService.getNearbyExpedition({ latitude, longitude, raioKm, limite }),
+    select: (data) => data?.dados ?? data,
+    enabled: Number.isFinite(latitude) && Number.isFinite(longitude),
+    staleTime: 30000,
+  });
+}
+
+export function useCaptureNearbyPlant() {
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: plantService.captureNearbyPlant,
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: ['myPlants'] });
+      qc.invalidateQueries({ queryKey: ['plantExpedition'] });
+
+      const plantaId = data?.dados?.plantaCapturada?.id ?? data?.plantaCapturada?.id ?? null;
+      displayServerMessageAsToast(data, 'Planta capturada com sucesso');
+
+      if (plantaId) {
+        setTimeout(() => navigate(`/planta/${plantaId}`), 350);
+      }
+    },
+    onError: (err) => {
+      const serverData = err.response?.data;
+      if (serverData) {
+        displayServerMessageAsToast(serverData, 'Nao foi possivel capturar a planta', true);
+      } else {
+        toast.error(err.message || 'Nao foi possivel capturar a planta');
+      }
+    },
+  });
+}

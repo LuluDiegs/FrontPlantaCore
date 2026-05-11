@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Compass, Camera, Search, User, Users } from 'lucide-react';
+import { Home, Compass, Camera, Search, User, Users, Map } from 'lucide-react';
 import styles from './BottomNav.module.css';
 
 const NAV_ITEMS = [
   { to: '/feed', label: 'Feed', icon: Home },
   { to: '/explorar', label: 'Explorar', icon: Compass },
   { to: '/buscar', label: 'Buscar', icon: Search },
+  { to: '/expedicao', label: 'Go', icon: Map },
   { to: '/comunidades', label: 'Comun.', icon: Users },
   { to: '/identificar', label: 'Identificar', icon: Camera },
   { to: '/perfil', label: 'Perfil', icon: User },

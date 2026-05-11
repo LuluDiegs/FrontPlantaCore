@@ -60,6 +60,18 @@ export const plantService = {
     return api.post(`/Planta/${plantaId}/gerar-lembrete-cuidado`).then((r) => r.data);
   },
 
+  updateLocation(plantaId, data) {
+    return api.put(`/Planta/localizacao/${plantaId}`, data).then((r) => r.data);
+  },
+
+  getNearbyExpedition(params) {
+    return api.get('/Planta/expedicao/proximas', { params }).then((r) => r.data);
+  },
+
+  captureNearbyPlant(data) {
+    return api.post('/Planta/expedicao/capturar', data).then((r) => r.data);
+  },
+
 
   recommend(data) {
     const formData = new FormData();

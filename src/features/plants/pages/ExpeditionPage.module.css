@@ -1,0 +1,365 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+  gap: 20px;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top right, rgba(249, 199, 79, 0.35), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(82, 183, 136, 0.26), transparent 38%),
+    linear-gradient(135deg, #163625 0%, #214f39 48%, #2d6a4f 100%);
+  color: var(--color-white);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(27, 67, 50, 0.22);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: auto -48px -48px auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.08);
+  transform: rotate(24deg);
+}
+
+.heroText {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fef3c7;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero h1 {
+  max-width: 14ch;
+  font-size: clamp(2rem, 3vw, 3.4rem);
+  line-height: 1.05;
+}
+
+.hero p {
+  max-width: 58ch;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
+}
+
+.heroStats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 14px;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.statCard span {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.statCard strong {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.controls,
+.mapCard,
+.listSection {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 40px rgba(45, 106, 79, 0.08);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+}
+
+.radiusGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.radiusChip {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-mist);
+  color: var(--color-text-mid);
+  font-weight: 800;
+  transition: transform var(--transition), background var(--transition), color var(--transition);
+}
+
+.radiusChip:hover {
+  transform: translateY(-1px);
+}
+
+.radiusChipActive {
+  background: var(--gradient-forest);
+  color: var(--color-white);
+}
+
+.controlActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.geoError {
+  margin-top: -8px;
+  color: #b42318;
+  font-weight: 700;
+}
+
+.mapCard {
+  padding: 20px;
+}
+
+.mapHeader,
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.mapHeader h2,
+.listHeader h2 {
+  font-size: 1.35rem;
+  margin-bottom: 4px;
+}
+
+.mapHeader p,
+.listHeader p {
+  color: var(--color-text-light);
+}
+
+.mapPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff8e6;
+  color: #946200;
+  font-weight: 800;
+}
+
+.mapWrapper {
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.map {
+  height: 430px;
+  width: 100%;
+}
+
+.currentMarker,
+.nearbyMarker {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.currentMarker {
+  background: #f9c74f;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+}
+
+.currentMarker span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b4f00;
+}
+
+.nearbyMarker {
+  background: #2d6a4f;
+  border: 4px solid rgba(255, 255, 255, 0.92);
+}
+
+.nearbyMarker span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d8f3dc;
+}
+
+.listSection {
+  padding: 20px;
+}
+
+.loadingWrap {
+  display: flex;
+  justify-content: center;
+  padding: 36px 0;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.plantCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(82, 183, 136, 0.16);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fdf9 100%);
+  box-shadow: 0 12px 28px rgba(45, 106, 79, 0.08);
+}
+
+.cardImageWrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, rgba(216, 243, 220, 0.9), rgba(149, 213, 178, 0.75));
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--color-forest);
+}
+
+.rarityBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rarityRara {
+  color: #9a3412;
+}
+
+.rarityIncomum {
+  color: #0f766e;
+}
+
+.rarityComum {
+  color: #3d5a47;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+}
+
+.cardBody h3 {
+  font-size: 1.12rem;
+  line-height: 1.2;
+}
+
+.cardBody p {
+  color: var(--color-text-light);
+}
+
+.metaList {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.metaList span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--color-mist);
+  color: var(--color-text-mid);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.statusBox {
+  min-height: 52px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(216, 243, 220, 0.65);
+  color: var(--color-text-mid);
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 16px 88px;
+  }
+
+  .controls,
+  .mapHeader,
+  .listHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .map {
+    height: 360px;
+  }
+
+  .hero {
+    padding: 22px;
+  }
+}
