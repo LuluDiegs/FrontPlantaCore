@@ -33,13 +33,16 @@ export default function PlantCard({ plant, highlight = '' }) {
   return (
     <Link to={`/planta/${plant.id}`} className={styles.card}>
       <div className={styles.imageWrapper}>
-        {plant.fotoPlanta ? (
-          <img src={plant.fotoPlanta} alt={name} className={styles.image} loading="lazy" crossOrigin="anonymous" />
-        ) : (
-          <div className={styles.placeholder}>
-            <Leaf size={32} />
-          </div>
-        )}
+        <img
+          src={plant.fotoPlanta || '/error-loading-plant-image.jpg'}
+          alt={name}
+          className={styles.image}
+          loading="lazy"
+          crossOrigin="anonymous"
+          onError={(e) => {
+            e.currentTarget.src = '/error-loading-plant-image.jpg';
+          }}
+        />
         {isToxic && (
           <span className={styles.toxicBadge}>
             <AlertTriangle size={12} />
