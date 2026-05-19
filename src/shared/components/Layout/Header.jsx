@@ -18,7 +18,7 @@ export default function Header() {
     <header className={styles.header}>
       <Link to="/feed" className={styles.logo}>
         <Leaf size={24} />
-        <span>PlantID</span>
+        <span>Plant 2Gather</span>
       </Link>
 
       <nav className={styles.nav}>

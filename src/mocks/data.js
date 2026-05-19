@@ -214,7 +214,7 @@ export const posts = [
   },
   {
     id: 'post5-mock',
-    conteudo: 'Acabei de identificar uma planta que ganhei usando o PlantID — era uma Calathea Orbifolia! Muito feliz com a precisão da identificação.',
+    conteudo: 'Acabei de identificar uma planta que ganhei usando o Plant 2Gather — era uma Calathea Orbifolia! Muito feliz com a precisão da identificação.',
     usuarioId: 'u4-mock-id',
     usuarioNome: 'Carlos Mendes',
     fotoUsuario: 'https://i.pravatar.cc/150?u=carlos',
