@@ -155,6 +155,10 @@
   font-weight: 700;
 }
 
+.brand svg {
+  margin-right: 10px;
+}
+
 .title {
   font-size: 1.75rem;
   font-weight: 700;
