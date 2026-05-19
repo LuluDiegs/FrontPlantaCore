@@ -30,7 +30,7 @@ function AppHeader() {
           <path d="M16 16 C19 10 25 8 28 2 C23 -1 16 4 16 16Z" fill="white"/>
           <path d="M16 14 C16 10 17 6 18 3 C20 4 20 8 18 12 Q17 13 16 14Z" fill="rgba(255,255,255,0.45)"/>
         </svg>
-        <span className={styles.headerLogoText}>PlantID</span>
+        <span className={styles.headerLogoText}>Plant 2Gather</span>
       </Link>
 
       <div className={styles.headerRight}>
